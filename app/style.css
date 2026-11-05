@@ -109,3 +109,23 @@ textarea.letter{font:.9rem/1.5 ui-monospace,Menlo,Consolas,monospace;margin-top:
 .aiblock li{overflow-wrap:anywhere;margin:2px 0}
 .aikey label{display:block;margin:12px 0 4px;font-size:.9rem;font-weight:600}
 #ai-status{margin:8px 0 0}#ai-status.err,.aiblock .err{color:var(--warn);font-weight:600}
+
+/* design polish: tokens for elevation and focus, clearer header, cards that respond to hover, visible empty states */
+:root{--shadow:0 1px 2px rgba(20,24,30,.05),0 3px 12px rgba(20,24,30,.05);--tap:44px}
+@media (prefers-color-scheme:dark){:root{--shadow:none}}
+.top{padding:16px 0 10px;border-bottom:1px solid var(--line);margin-bottom:12px}
+h1{font-size:1.35rem}
+select,input:not([type=checkbox]):not([type=radio]),textarea{min-height:var(--tap)}
+input:focus,select:focus,textarea:focus{outline:3px solid var(--focus);outline-offset:1px;border-color:var(--focus)}
+button:not(:disabled):hover{border-color:var(--acc)}
+button.pri:not(:disabled):hover{filter:brightness(1.06)}
+button:disabled{opacity:.5;cursor:not-allowed}
+.tab{border-bottom-width:3px;color:var(--mut)}.tab.on{color:var(--ink)}
+.tabs{scrollbar-width:none}.tabs::-webkit-scrollbar{display:none}
+.kind{border-left:4px solid var(--acc);transition:border-color .15s,background-color .15s}
+.kind:hover{background:var(--soft)}
+.entry,.hero,.ready,.remind{box-shadow:var(--shadow)}
+.empty{border:1px dashed var(--line);border-radius:var(--r-lg);background:var(--card)}
+.empty p{font-size:.95rem}
+.foot{border-top:1px solid var(--line);padding-top:14px}
+@media (prefers-reduced-motion:reduce){.kind{transition:none}}
