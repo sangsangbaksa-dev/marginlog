@@ -10,10 +10,14 @@ Live: https://marginlog.pages.dev
 - **Pattern finder**: weekday x hour heat map, 8-week trend, quiet-hour breaches, longest calm stretch, "recorded late" flags (>48 h).
 - **Evidence strength** score per entry with concrete tips.
 - **Escalation ladder** per case type (talk, written notice, complaint, mediation, authority/legal) with answer deadlines and overdue warnings.
-- **Report**: copy, print/PDF, Markdown, CSV (formula-injection safe), photos, and the seal check.
+- **Report**: copy, print/PDF, Markdown, plain-text chronology (.txt), CSV (formula-injection safe), photos, and the seal check. The printed version drops app controls and the readiness checklist, and keeps the seal line and photo grid.
 - Backup/restore (JSON incl. photos, seals re-checked on restore), search/filters, archive, delete with undo.
 - Optional encrypted backup: AES-GCM with a passphrase (PBKDF2-SHA256, 310k iterations, WebCrypto). A lost passphrase cannot be recovered.
-- All-cases overview: entries, last entry, overdue deadlines and evidence score per case, one tap to open.
+- All-cases overview: entries, last entry, overdue deadlines and evidence score per case, one tap to open. A search box filters the case list by name, type and status text.
+- Timeline view: entries grouped by month, with each month's total minutes in its heading. Tap a time to open that entry in the list view. Switchable from the list view. Search, tag, severity and voided filters apply to both.
+- Photo gallery per case: every photo attached to an entry, newest first, with the entry date. Opens full size inside the same dialog.
+- Deadline reminders: a banner shows reply deadlines that are overdue or due within 7 days, across all active cases. It appears when the app is opened. It is not an OS notification, so nothing fires while the app is closed. The .ics export still feeds your calendar.
+- Accessibility: visible focus rings, 44 px touch targets, and dark mode following the system setting.
 
 ## Paid access
 - `app/config.js`: `checkoutUrl` (Lemon Squeezy checkout). While it contains `example.com` the buy buttons stay hidden.

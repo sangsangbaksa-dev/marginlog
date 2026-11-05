@@ -190,3 +190,49 @@ test('calendarAll: one calendar with open deadlines from every active case; dige
   assert.ok(md.includes('Flat 3B (Noise or neighbour)') || md.includes('Flat 3B ('));
   assert.ok(!md.includes('Old'));
 });
+
+test('month groups: events grouped by month, newest first, entries kept in order', async () => {
+  const c = await mk([{ at: '2026-10-01T23:00', text: 'first' }, { at: '2026-10-20T23:00', text: 'second' }, { at: '2026-11-01T09:00', text: 'third' }]);
+  const g = C.monthGroups(C.events(c.entries));
+  assert.deepEqual(g.map(x => x.ym), ['2026-11', '2026-10']);
+  assert.deepEqual(g.map(x => x.items.length), [1, 2]);
+  assert.deepEqual(g[1].items.map(e => e.text), ['second', 'first']);
+});
+
+test('photo index lists photos of events, newest first, and flags voided entries', async () => {
+  const c = await mk([{ at: '2026-10-01T23:00', text: 'first', photos: [{ id: 'pa', h: 'ha' }] }, { at: '2026-10-20T23:00', text: 'second', photos: [{ id: 'pb', h: 'hb' }, { id: 'pc', h: 'hc' }] }]);
+  let idx = C.photoIndex(c);
+  assert.deepEqual(idx.map(p => p.id), ['pb', 'pc', 'pa']); assert.ok(idx.every(p => !p.voided));
+  c.entries.push(await C.seal(c.entries[1].hash, { type: 'void', ref: c.entries[1].id, at: '2026-11-02T08:00', rec: NOW, text: 'typo' }));
+  idx = C.photoIndex(c); assert.equal(idx.length, 3); assert.equal(idx.filter(p => p.voided).length, 2); assert.equal(idx[2].voided, false);
+});
+
+test('due items: overdue and due-within-window open steps across active cases, soonest first', () => {
+  const cases = [
+    { id: 'x', name: 'Flat', archived: false, steps: [
+      { id: 'a', kind: 'written', due: '2026-10-30', done: false },
+      { id: 'b', kind: 'talk', due: '2026-11-02', done: false },
+      { id: 'c', kind: 'complaint', due: '2026-11-08', done: false },
+      { id: 'd', kind: 'talk', due: '2026-11-20', done: false },
+      { id: 'e', kind: 'talk', due: '2026-11-03', done: true },
+      { id: 'f', kind: 'talk', due: '', done: false }] },
+    { id: 'y', name: 'Old', archived: true, steps: [{ id: 'g', kind: 'talk', due: '2026-11-03', done: false }] }
+  ];
+  const r = C.dueItems(cases, NOW, 7);
+  assert.deepEqual(r.map(x => x.stepId), ['a', 'b', 'c']);
+  assert.deepEqual(r.map(x => x.overdue), [true, false, false]);
+  assert.deepEqual(r.map(x => x.daysLeft), [-3, 0, 6]);
+  assert.equal(r[0].caseName, 'Flat');
+  assert.deepEqual(C.dueItems(cases, NOW, 0).map(x => x.stepId), ['a', 'b']);
+});
+
+test('plain-text chronology keeps order and text, and states the seal result', async () => {
+  const c = await mk([{ at: '2026-10-20T23:00', text: 'later one' }, { at: '2026-10-01T23:00', text: 'first line\nsecond line', witness: 'Ana' }]);
+  c.name = 'Flat 3B';
+  const L = Object.assign({}, I.L.en, { counterpart: 'Other', goal: 'Goal', generated: 'Generated', timeline: 'Timeline', sev: 'Severity', late: 'late', witness: 'Witness', photos: 'Photos', reportedTo: 'reported', voidedBadge: 'voided', recordedAt: 'recorded', integrity: 'Integrity' });
+  const txt = C.chronologyText(c, L, NOW, { ok: true, head: 'b'.repeat(64) });
+  assert.ok(txt.startsWith('Flat 3B\n')); assert.ok(txt.includes('| #'), 'each entry carries its fingerprint prefix');
+  assert.ok(txt.indexOf('first line') < txt.indexOf('later one')); assert.ok(txt.includes('   second line') && txt.includes('Witness: Ana'));
+  assert.ok(txt.includes('Seal intact. Sealed records: 2'));
+  assert.ok(C.chronologyText(c, L, NOW, { ok: false }).includes(I.L.en.chainBad));
+});
