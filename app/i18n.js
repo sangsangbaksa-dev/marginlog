@@ -113,7 +113,9 @@
     rd_parties: 'Other party and goal filled in',
     rd_written: 'A written notice is logged',
     rd_late: 'Few entries recorded late (under 20%)',
-    tagsH: 'What it is about'
+    tagsH: 'What it is about',
+    ovSearch: 'Search cases', tlOpen: 'Open entry',viewWord: 'View',viewList: 'List', viewTimeline: 'Timeline', photosBtn: 'Photos ({n})', galleryH: 'Photos in this case', galleryHelp: 'Every photo attached to an entry, newest first. Tap one to view it full size.', dlTxt: 'Download chronology (.txt)',
+    remindH: 'Deadlines', remindOver: 'Overdue: {step} in {case} was due {date}', remindToday: 'Due today: {step} in {case}', remindTomorrow: 'Due tomorrow: {step} in {case}', remindSoon: 'Due in {d} days: {step} in {case} ({date})', remindMore: '{n} more deadlines in other cases. Open Overview for the full list.'
   };
   L.ko = {
     ovIcs: '기한 내보내기 (.ics)', ovDigest: '요약 내보내기 (.md)', ovNoDeadlines: '내보낼 열린 기한이 없습니다.', dgTitle: 'Marginlog 요약', dgAttention: '확인 필요', dgNone: '기한이 지난 항목이 없습니다.', dgCases: '사건', dgRecent: '최근 30일 {n}건', dgOverdueItem: '{case}의 {step} 기한: {d}',
@@ -227,7 +229,9 @@
     rd_parties: '상대방과 목표 입력',
     rd_written: '서면 통보를 기록함',
     rd_late: '늦게 기록한 건이 적음(20% 미만)',
-    tagsH: '무엇에 관한 것인가'
+    tagsH: '무엇에 관한 것인가',
+    ovSearch: '사건 검색', tlOpen: '항목 열기',viewWord: '보기',viewList: '목록', viewTimeline: '타임라인', photosBtn: '사진 ({n})', galleryH: '이 사건의 사진', galleryHelp: '기록에 첨부된 모든 사진을 최신순으로 보여 줍니다. 하나를 누르면 크게 봅니다.', dlTxt: '시간순 기록 내려받기 (.txt)',
+    remindH: '기한', remindOver: '기한 지남: {case}의 {step} (기한 {date})', remindToday: '오늘까지: {case}의 {step}', remindTomorrow: '내일까지: {case}의 {step}', remindSoon: '{d}일 남음: {case}의 {step} ({date})', remindMore: '다른 사건에 기한 {n}건이 더 있습니다. 전체 목록은 전체 보기에서 확인하세요.'
   };
   L.ja = {
     ovIcs: '期限を書き出す (.ics)', ovDigest: 'ダイジェストを書き出す (.md)', ovNoDeadlines: '書き出す未完了の期限がありません。', dgTitle: 'Marginlog ダイジェスト', dgAttention: '要確認', dgNone: '期限超過はありません。', dgCases: '案件', dgRecent: '直近30日 {n}件', dgOverdueItem: '{case}の{step}、期限 {d}',
@@ -341,7 +345,9 @@
     rd_parties: '相手と目標を入力済み',
     rd_written: '書面通知を記録済み',
     rd_late: '遅れて記録した件が少ない（20%未満）',
-    tagsH: '何についてか'
+    tagsH: '何についてか',
+    ovSearch: '案件を検索', tlOpen: 'この記録を開く',viewWord: '表示',viewList: 'リスト', viewTimeline: 'タイムライン', photosBtn: '写真（{n}）', galleryH: 'この案件の写真', galleryHelp: '記録に添付されたすべての写真を新しい順に表示します。タップすると大きく表示されます。', dlTxt: '時系列の記録をダウンロード (.txt)',
+    remindH: '期限', remindOver: '期限超過：{case}の{step}（期限 {date}）', remindToday: '本日期限：{case}の{step}', remindTomorrow: '明日期限：{case}の{step}', remindSoon: 'あと{d}日：{case}の{step}（{date}）', remindMore: '他の案件にさらに{n}件の期限があります。概要で全件を確認できます。'
   };
   L.zh = {
     ovIcs: '导出期限 (.ics)', ovDigest: '导出摘要 (.md)', ovNoDeadlines: '没有可导出的未完成期限。', dgTitle: 'Marginlog 摘要', dgAttention: '需要关注', dgNone: '没有逾期项。', dgCases: '事项', dgRecent: '最近 30 天 {n} 条', dgOverdueItem: '{case}的{step}，到期 {d}',
@@ -455,7 +461,9 @@
     rd_parties: '已填写对方和目标',
     rd_written: '已记录书面通知',
     rd_late: '事后补记的很少（低于 20%）',
-    tagsH: '主要涉及什么'
+    tagsH: '主要涉及什么',
+    ovSearch: '搜索事项', tlOpen: '打开此记录',viewWord: '视图',viewList: '列表', viewTimeline: '时间线', photosBtn: '照片（{n}）', galleryH: '本事项的照片', galleryHelp: '所有附在记录上的照片，按最新排序。点按即可放大查看。', dlTxt: '下载时间顺序记录 (.txt)',
+    remindH: '期限', remindOver: '已逾期：{case}的{step}（到期 {date}）', remindToday: '今天到期：{case}的{step}', remindTomorrow: '明天到期：{case}的{step}', remindSoon: '{d}天后到期：{case}的{step}（{date}）', remindMore: '其他事项还有 {n} 个期限。在总览中查看全部。'
   };
   L.es = {
     ovIcs: 'Descargar plazos (.ics)', ovDigest: 'Descargar resumen (.md)', ovNoDeadlines: 'No hay plazos abiertos que exportar.', dgTitle: 'Resumen de Marginlog', dgAttention: 'Requiere atención', dgNone: 'Nada vencido.', dgCases: 'Casos', dgRecent: '{n} en los últimos 30 días', dgOverdueItem: '{step} en {case} vencía el {d}',
@@ -569,7 +577,9 @@
     rd_parties: 'Otra parte y objetivo rellenados',
     rd_written: 'Hay un aviso por escrito registrado',
     rd_late: 'Pocas entradas registradas tarde (menos del 20%)',
-    tagsH: 'De qué trata'
+    tagsH: 'De qué trata',
+    ovSearch: 'Buscar casos', tlOpen: 'Abrir entrada',viewWord: 'Vista',viewList: 'Lista', viewTimeline: 'Cronología', photosBtn: 'Fotos ({n})', galleryH: 'Fotos de este caso', galleryHelp: 'Todas las fotos adjuntas a las entradas, de la más reciente a la más antigua. Toca una para verla a tamaño completo.', dlTxt: 'Descargar cronología (.txt)',
+    remindH: 'Plazos', remindOver: 'Vencido: {step} en {case} (vencía el {date})', remindToday: 'Vence hoy: {step} en {case}', remindTomorrow: 'Vence mañana: {step} en {case}', remindSoon: 'Vence en {d} días: {step} en {case} ({date})', remindMore: 'Hay {n} plazos más en otros casos. Abre el resumen para verlos todos.'
   };
   var STEPS = {
     en: { talk: 'Talk', written: 'Written notice', complaint: 'Formal complaint', mediation: 'Mediation', authority: 'Authority', legal: 'Legal action' },

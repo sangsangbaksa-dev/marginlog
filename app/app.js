@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   var C = window.MLCore, I = window.MLI18n, KEY = 'marginlog:v1';
-  var S = { cases: [], cur: null, tab: 'log', lang: 'en', f: { q: '', tag: '', sev: 0, voided: false } };
+  var S = { cases: [], cur: null, tab: 'log', view: 'list', lang: 'en', f:{ q: '', tag: '', sev: 0, voided: false } };
   var persisted = null, stale = false, blocked = false, corruptKey = null, lastTrig = null, root = document.getElementById('root'), pending = { photos: [] }, toastTimer = null, liveTimer = null, undoBuf = null;
 
   function t(k, v) {
@@ -84,6 +84,11 @@
     if (ae && ae !== document.body && root.contains(ae) && !(dlg && dlg.contains(ae))) fkey = ae.id ? '#' + ae.id : ae.getAttribute('data-act') ? '[data-act="' + ae.getAttribute('data-act') + '"]' + (ae.getAttribute('data-id') ? '[data-id="' + ae.getAttribute('data-id') + '"]' : ae.getAttribute('data-tab') ? '[data-tab="' + ae.getAttribute('data-tab') + '"]' : '') : null;
     renderInner();
     if (fkey && !dlg) { var nf = $(fkey) || $('#panel') || $('#main'); if (nf) { if (!/^(BUTTON|SELECT|INPUT|A)$/.test(nf.tagName)) nf.setAttribute('tabindex', '-1'); nf.focus(); } }
+    if (S.focusId) {
+      var fid = S.focusId, fe = null; S.focusId = null;
+      try { fe = $('.entry[data-id="' + (window.CSS && CSS.escape ? CSS.escape(fid) : fid) + '"]'); } catch (e) { fe = null; }
+      if (fe) { fe.setAttribute('tabindex', '-1'); fe.scrollIntoView({ block: 'center' }); fe.focus(); }
+    }
     if (S.tab === 'report' && cur()) fillReport();
   }
   function renderInner() {
@@ -92,6 +97,7 @@
       Object.keys(I.L).map(function (k) { return '<option value="' + k + '"' + (k === S.lang ? ' selected' : '') + '>' + esc(I.L[k].name) + '</option>'; }).join('') +
       '</select><button type="button" class="ghost" data-act="overview">' + esc(t('overviewBtn')) + '</button><button type="button" class="ghost" data-act="data">' + esc(t('dataBtn')) + '</button></div></header>';
     h += '<main id="main">';
+    h += remindersBlock();
     h += c ? caseView(c) : emptyView();
     h += '</main><footer class="foot"><p>' + esc(t('privacy')) + '</p><p>' + esc(t('disclaimer')) + '</p></footer>';
     root.innerHTML = h;
@@ -102,6 +108,15 @@
     Object.keys(C.KINDS).forEach(function (k) { h += '<button type="button" class="kind" data-act="newcase" data-kind="' + k + '"><b>' + esc(t('kind_' + k)) + '</b><span>' + esc(t('kindHint_' + k)) + '</span></button>'; });
     h += '</div><p class="hint">' + esc(t('sealHint')) + '</p></section>';
     return h;
+  }
+  /* in-app reminders: open reply deadlines that are overdue or due within a week, across all active cases */
+  function remindersBlock() {
+    var rem = C.dueItems(S.cases, now(), 7); if (!rem.length) return '';
+    var names = I.stepNames(S.lang);
+    return '<section class="remind" aria-labelledby="rem-h"><h2 id="rem-h">' + esc(t('remindH')) + '</h2><ul>' + rem.slice(0, 3).map(function (r) {
+      var v = { step: names[r.kind] || r.kind, 'case': r.caseName, d: r.daysLeft, date: r.due }, key = r.overdue ? 'remindOver' : r.daysLeft === 0 ? 'remindToday' : r.daysLeft === 1 ? 'remindTomorrow' : 'remindSoon';
+      return '<li' + (r.overdue ? ' class="warn"' : '') + '><button type="button" class="link" data-act="remindopen" data-id="' + esc(r.caseId) + '">' + esc(t(key, v)) + '</button></li>';
+    }).join('') + '</ul>' + (rem.length > 3 ? '<p class="hint">' + esc(t('remindMore', { n: rem.length - 3 })) + '</p>' : '') + '</section>';
   }
   function caseView(c) {
     var st = C.stats(c, now()), sg = C.suggestNext(c, now()), act = S.cases;
@@ -132,6 +147,49 @@
     if (f.q) { var q = f.q.toLowerCase(); if ((e.text + ' ' + e.witness + ' ' + e.tags.join(' ') + ' ' + C.addenda(c.entries, e.id).map(function (n) { return n.text; }).join(' ')).toLowerCase().indexOf(q) < 0) return false; }
     return true;
   }
+  function logTools(c) {
+    var n = C.photoIndex(c).length, tl = S.view === 'timeline';
+    return '<div class="btns sm wrap logtools"><div class="seg" role="group" aria-label="' + esc(t('viewWord')) + '"><button type="button" aria-pressed="' + (!tl) + '" data-act="view" data-id="list">' + esc(t('viewList')) + '</button><button type="button" aria-pressed="' + tl + '" data-act="view" data-id="timeline">' + esc(t('viewTimeline')) + '</button></div>' +
+      (n ? '<button type="button" class="ghost" data-act="gallery">' + esc(t('photosBtn', { n: n })) + '</button>' : '') + '</div>';
+  }
+  function monthLabel(ym) {
+    var y = +ym.slice(0, 4), m = +ym.slice(5, 7);
+    try { return new Intl.DateTimeFormat(S.lang, { year: 'numeric', month: 'long' }).format(new Date(y, m - 1, 1)); } catch (e) { return ym; }
+  }
+  /* month header suffix: total minutes disturbed in that month, when any were logged */
+  function minsLabel(items) {
+    var m = items.reduce(function (a, e) { return a + (e.dur || 0); }, 0);
+    return m ? ' · ' + m + ' ' + t('min') : '';
+  }
+  /* timeline: one compact list per month, newest first; same filtered entries as the list view */
+  function timelineView(list, v) {
+    return C.monthGroups(list).map(function (g) {
+      return '<section class="tlm"><h3>' + esc(monthLabel(g.ym)) + ' <span class="cap">(' + g.items.length + minsLabel(g.items) + ')</span></h3><ol class="tl">' + g.items.map(function (e) {
+        var isV = !!v[e.id], short = e.text.replace(/\s+/g, ' ').trim();
+        return '<li' + (isV ? ' class="voided"' : '') + '><span class="tlh"><button type="button" class="link" data-act="tlopen" data-id="' + esc(e.id) + '"><time>' + esc(fmtAt(e.at)) + '</time></button>' + (e.sev ? '<span class="sev s' + e.sev + '">' + esc(t('sevWord')) + ' ' + e.sev + '/5</span>' : '') + (isV ? '<span class="pill warn">' + esc(t('voidedBadge')) + '</span>' : '') + '</span>' +
+          '<span class="tlt">' + esc(short.length > 160 ? short.slice(0, 157) + '…' : short) + '</span></li>';
+      }).join('') + '</ol></section>';
+    }).join('');
+  }
+  /* photo gallery for the whole case; the viewer opens inside this dialog (no nested dialogs) */
+  function galleryDialog(c) {
+    var items = C.photoIndex(c), v = C.voidedIds(c.entries);
+    if (!items.length) return toast(t('photoMissing'));
+    var d = openDialog('<h2 id="dlg-h">' + esc(t('galleryH')) + '</h2><p class="hint">' + esc(t('galleryHelp')) + '</p>' +
+      '<div id="gal-view" class="galview" hidden><img class="big-ph" alt=""><div class="btns"><button type="button" class="ghost" data-gal-hide>' + esc(t('close')) + '</button></div></div>' +
+      '<ul class="gal">' + items.map(function (p) {
+        return '<li><button type="button" class="thumb" data-pid="' + esc(p.id) + '" aria-label="' + esc(t('openPhoto') + ', ' + fmtAt(p.at)) + '"><img alt="" data-pid="' + esc(p.id) + '" width="120" height="120"></button><span class="cap">' + esc(fmtAt(p.at)) + (v[p.entry] ? ' · ' + esc(t('voidedBadge')) : '') + '</span></li>';
+      }).join('') + '</ul><p class="err" role="alert" hidden></p><div class="btns"><button type="button" class="ghost" data-close>' + esc(t('close')) + '</button></div>', null, { focus: '[data-close]' });
+    hydratePhotos(d);
+    d.addEventListener('click', function (ev) {
+      if (ev.target.closest && ev.target.closest('[data-gal-hide]')) { $('#gal-view', d).hidden = true; return; }
+      var b = ev.target.closest && ev.target.closest('button[data-pid]'); if (!b) return;
+      photoGet(b.getAttribute('data-pid')).then(function (src) {
+        if (!src) return err(t('photoMissing'));
+        $('#gal-view img', d).src = src; $('#gal-view', d).hidden = false; err('');
+      });
+    });
+  }
   function logTab(c) {
     var v = C.voidedIds(c.entries), all = c.entries.filter(function (e) { return e.type === 'event' && (S.f.voided || !v[e.id]); });
     if (!c.entries.some(function (e) { return e.type === 'event'; })) return '<div class="empty small"><h3>' + esc(t('logEmptyH')) + '</h3><p>' + esc(t('logEmptyB')) + '</p></div>';
@@ -140,8 +198,9 @@
     var h = '<form class="filters" role="search" id="filters" autocomplete="off"><label class="sr" for="fq">' + esc(t('search')) + '</label><input id="fq" type="search" placeholder="' + esc(t('search')) + '" value="' + esc(S.f.q) + '" maxlength="60">' +
       '<label class="sr" for="ftag">' + esc(t('tagsWord')) + '</label><select id="ftag"><option value="">' + esc(t('anyTag')) + '</option>' + Object.keys(tags).sort().map(function (x) { return '<option' + (S.f.tag === x ? ' selected' : '') + ' value="' + esc(x) + '">' + esc(x) + '</option>'; }).join('') + '</select>' +
       '<label class="sr" for="fsev">' + esc(t('sevWord')) + '</label><select id="fsev"><option value="0">' + esc(t('anySev')) + '</option>' + [2, 3, 4, 5].map(function (n) { return '<option' + (S.f.sev === n ? ' selected' : '') + ' value="' + n + '">' + esc(t('sevMin', { n: n })) + '</option>'; }).join('') + '</select>' +
-      '<label class="chk"><input type="checkbox" id="fvoid"' + (S.f.voided ? ' checked' : '') + '> ' + esc(t('showVoided')) + '</label></form>';
+      '<label class="chk"><input type="checkbox" id="fvoid"' + (S.f.voided ? ' checked' : '') + '> ' + esc(t('showVoided')) + '</label></form>' + logTools(c);
     if (!list.length) return h + '<div class="empty small"><p>' + esc(t(!all.length ? 'allVoided' : 'noMatch')) + '</p><button type="button" class="ghost" data-act="clearf">' + esc(t('clearFilters')) + '</button></div>';
+    if (S.view === 'timeline') return h + '<p class="count" role="status">' + esc(t('showing', { n: list.length, t: all.length })) + '</p>' + timelineView(list, v);
     h += '<p class="count" role="status">' + esc(t('showing', { n: list.length, t: all.length })) + '</p><ol class="entries">';
     list.forEach(function (e) {
       var s = C.strength(e), isV = !!v[e.id], notes = C.addenda(c.entries, e.id), p = C.parseAt(e.at), quiet = p && C.inQuiet(p.h, c.quiet);
@@ -200,7 +259,7 @@
   function reportTab(c) {
     if (!c.entries.some(function (e) { return e.type === 'event'; })) return '<div class="empty small"><h3>' + esc(t('repEmptyH')) + '</h3><p>' + esc(t('repEmptyB')) + '</p></div>';
     var rd = C.readiness(c, now()), rh = '<section class="ready" aria-labelledby="rd-h"><h3 id="rd-h">' + esc(t('rdH')) + '</h3><p class="cap">' + esc(t('rdScore', { n: rd.met, m: rd.total })) + '</p><ul class="rdl">' + rd.checks.map(function (x) { return '<li class="' + (x.ok ? 'ok' : 'no') + '"><span aria-hidden="true">' + (x.ok ? '✓' : '○') + '</span> ' + esc(t('rd_' + x.key)) + '</li>'; }).join('') + '</ul></section>';
-    return rh + '<div class="btns wrap"><button type="button" class="pri" data-act="copyrep">' + esc(t('copyRep')) + '</button><button type="button" class="sec" data-act="print">' + esc(t('printRep')) + '</button><button type="button" class="ghost" data-act="dlmd">' + esc(t('dlMd')) + '</button><button type="button" class="ghost" data-act="dlcsv">' + esc(t('dlCsv')) + '</button></div>' +
+    return rh + '<div class="btns wrap"><button type="button" class="pri" data-act="copyrep">' + esc(t('copyRep')) + '</button><button type="button" class="sec" data-act="print">' + esc(t('printRep')) + '</button><button type="button" class="ghost" data-act="dlmd">' + esc(t('dlMd')) + '</button><button type="button" class="ghost" data-act="dltxt">' + esc(t('dlTxt')) + '</button><button type="button" class="ghost" data-act="dlcsv">' + esc(t('dlCsv')) + '</button></div>' +
       '<p class="hint">' + esc(t('repHint')) + '</p><p id="chainline" class="chain" role="status">' + esc(t('verifying')) + '</p><button type="button" class="ghost" data-act="verify">' + esc(t('verifyNow')) + '</button><pre id="repview" class="rep" tabindex="0" aria-label="' + esc(t('tab_report')) + '"></pre><div id="repphotos" class="repphotos"></div>';
   }
   function caseTab(c) {
@@ -210,8 +269,8 @@
   }
 
   /* ---------- photos ---------- */
-  function hydratePhotos() {
-    var imgs = root.querySelectorAll('img[data-pid]');
+  function hydratePhotos(scope) {
+    var imgs = (scope || root).querySelectorAll('img[data-pid]');
     return Promise.all(Array.prototype.map.call(imgs, function (img) { return photoGet(img.getAttribute('data-pid')).then(function (d) { if (d) img.src = d; else img.alt = t('photoMissing'); }); }));
   }
   function readPhoto(file) {
@@ -249,7 +308,9 @@
       Promise.resolve(r).catch(fail).then(done);
     });
     dlg.addEventListener('cancel', function () { pending.photos = []; });
-    dlg.addEventListener('close', function () { if (dlg) { dlg.remove(); dlg = null; } setTimeout(restoreFocus, 0); if (stale) { stale = false; S.cases = []; S.cur = null; load(); render(); toast(t('otherTab')); } });
+    var thisDlg = dlg;
+    /* a late close event from a dialog that was already replaced must not remove the newer one */
+    dlg.addEventListener('close', function () { thisDlg.remove(); if (dlg && dlg !== thisDlg) return; dlg = null; setTimeout(restoreFocus, 0); if (stale) { stale = false; S.cases = []; S.cur = null; load(); render(); toast(t('otherTab')); } });
     $('[data-close]', dlg) && Array.prototype.forEach.call(dlg.querySelectorAll('[data-close]'), function (b) { b.addEventListener('click', function () { pending.photos = []; closeDialog(); }); });
     if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', '');
     var first = $((opts && opts.focus) || 'input,textarea,select,button', dlg); first && first.focus();
@@ -343,8 +404,7 @@
       '<label for="c-goal">' + esc(t('goal')) + '</label><input id="c-goal" maxlength="200" value="' + esc(c ? c.goal : '') + '" placeholder="' + esc(t('goalPh')) + '">' +
       '<fieldset><legend>' + esc(t('quietWord')) + '</legend><label class="chk"><input type="checkbox" id="c-qon"' + (q ? ' checked' : '') + '> ' + esc(t('quietOn')) + '</label><div class="two"><div><label for="c-qa">' + esc(t('quietFrom')) + '</label><input id="c-qa" type="number" min="0" max="23" value="' + (q ? q[0] : 22) + '"></div><div><label for="c-qb">' + esc(t('quietTo')) + '</label><input id="c-qb" type="number" min="0" max="23" value="' + (q ? q[1] : 7) + '"></div></div></fieldset>' + btnRow(), function (form) {
       var name = $('#c-name', form).value.trim(); if (!name) { $('#c-name', form).focus(); return err(t('errName')); }
-      if ($('#c-qon', form).checked && ($('#c-qa', form).value === '' || $('#c-qb', form).value === '')) return err(t('errQuiet'));
-      if ($('#c-qon', form).checked && $('#c-qa', form).value === $('#c-qb', form).value) return err(t('errQuiet'));
+      if ($('#c-qon', form).checked) { var qa = +$('#c-qa', form).value, qb = +$('#c-qb', form).value; if ($('#c-qa', form).value === '' || $('#c-qb', form).value === '' || !(qa >= 0 && qa <= 23 && qb >= 0 && qb <= 23) || Math.round(qa) === Math.round(qb)) return err(t('errQuiet')); }
       var quiet = $('#c-qon', form).checked ? [C.clampInt($('#c-qa', form).value, 0, 23), C.clampInt($('#c-qb', form).value, 0, 23)] : null;
       var o = c || { id: C.uid(), kind: $('#c-kind', form).value, created: now(), archived: false, entries: [], steps: [], live: null };
       var snap = { n: o.name, w: o.counterpart, g: o.goal, q: o.quiet, cur: S.cur }; o.name = name; o.counterpart = $('#c-who', form).value.trim(); o.goal = $('#c-goal', form).value.trim(); o.quiet = quiet; if (!c) S.cases.push(o); S.cur = o.id; if (!c) S.tab = 'log';
@@ -406,7 +466,15 @@
         '<br><span class="hint">' + esc(t('kind_' + r.kind)) + ' · ' + esc(t('ovEntries', { n: r.total })) + (r.lastAt ? ' · ' + esc(t('ovLast', { d: r.lastAt.slice(0, 10) })) : '') + '</span><br>' +
         (r.overdue ? '<span class="pill warn">' + esc(t('ovOverdue', { n: r.overdue })) + '</span> ' : '') + (r.openSteps ? '<span class="pill">' + esc(t('ovOpen', { n: r.openSteps })) + '</span> ' : '') +
         '<span class="pill">' + esc(t('ovStrength', { s: r.strength })) + '</span></button></li>'; }).join('') : '<li class="hint">' + esc(t('ovNone')) + '</li>';
-    openDialog('<h2 id="dlg-h">' + esc(t('overviewH')) + '</h2><p class="hint">' + esc(t('overviewHelp')) + '</p><ul class="facts">' + items + '</ul><p class="err" role="alert" hidden></p><div class="btns"><button type="button" class="sec" data-ov-act="ics">' + esc(t('ovIcs')) + '</button><button type="button" class="sec" data-ov-act="digest">' + esc(t('ovDigest')) + '</button></div><div class="btns"><button type="button" class="ghost" data-close>' + esc(t('close')) + '</button></div>');
+    openDialog('<h2 id="dlg-h">' + esc(t('overviewH')) + '</h2><p class="hint">' + esc(t('overviewHelp')) + '</p><label class="sr" for="ov-q">' + esc(t('ovSearch')) + '</label><input id="ov-q" type="search" placeholder="' + esc(t('ovSearch')) + '" maxlength="60" autocomplete="off"><ul class="facts">' + items + '</ul><p class="hint" id="ov-nomatch" hidden>' + esc(t('noMatch')) + '</p><p class="err" role="alert" hidden></p><div class="btns wrap"><button type="button" class="sec" data-ov-act="ics">' + esc(t('ovIcs')) + '</button><button type="button" class="sec" data-ov-act="digest">' + esc(t('ovDigest')) + '</button></div><div class="btns"><button type="button" class="ghost" data-close>' + esc(t('close')) + '</button></div>');
+    /* live filter over the case rows: hides rows whose text does not contain the query */
+    dlg.addEventListener('input', function (ev) {
+      if (ev.target.id !== 'ov-q') return;
+      var q = ev.target.value.trim().toLowerCase();
+      var shown = 0;
+      Array.prototype.forEach.call(dlg.querySelectorAll('.facts > li'), function (li) { li.hidden = !!q && li.textContent.toLowerCase().indexOf(q) < 0; if (!li.hidden) shown++; });
+      var nm = $('#ov-nomatch', dlg); if (nm) nm.hidden = !q || shown > 0;
+    });
     dlg.addEventListener('click', function (ev) {
       var a = ev.target.closest('[data-ov-act]');
       if (a) {
@@ -466,6 +534,12 @@
   }
 
   /* ---------- report ---------- */
+  /* the seal as the report states it: chain intact and every photo still matches its fingerprint; {ok:false} otherwise */
+  async function sealStatus(c) {
+    var chain; try { chain = await C.verifyChain(c.entries, readCp()[c.id]); } catch (e) { return { ok: false }; }
+    for (var i = 0; i < c.entries.length; i++) for (var j = 0; j < c.entries[i].photos.length; j++) { var p = c.entries[i].photos[j], d = await photoGet(p.id); if (!d || await C.sha256Hex(d) !== p.h) return { ok: false }; }
+    return chain.ok ? chain : { ok: false };
+  }
   async function fillReport() {
     var c = cur(), pre = $('#repview'); if (!c || !pre) return;
     var chain, bad = 0; try { chain = await C.verifyChain(c.entries, readCp()[c.id]); } catch (e) { var ln = $('#chainline'); if (ln) { ln.textContent = t('cryptoFail'); ln.className = 'chain bad'; } return; }
@@ -492,7 +566,12 @@
     if (act === 'data') return dataDialog();
     if (act === 'overview') return overviewDialog();
     if (act === 'newcase') return caseDialog(b.getAttribute('data-kind') || 'other');
+    if (act === 'remindopen') { S.cur = id; S.tab = 'steps'; S.f = { q: '', tag: '', sev: 0, voided: false }; save(); render(); return; }
     if (!c) return;
+    if (act === 'view') { S.view = id === 'timeline' ? 'timeline' : 'list'; return render(); }
+    if (act === 'gallery') return galleryDialog(c);
+    if (act === 'tlopen') { var tv = C.voidedIds(c.entries); S.view = 'list'; S.f = { q: '', tag: '', sev: 0, voided: !!tv[id] }; S.focusId = id; return render(); }
+    if (act === 'dltxt') { var ss = await sealStatus(c); return download('marginlog-chronology-' + slug(c.name) + '.txt', 'text/plain', '﻿' + C.chronologyText(c, labels(), now(), ss)); }
     if (act === 'tab') { S.tab = b.getAttribute('data-tab'); render(); var tb = $('#tab-' + S.tab); tb && tb.focus(); if (S.tab === 'report') fillReport(); return; }
     if (act === 'log') return entryDialog(c);
     if (act === 'livestart') { c.live = { start: now() }; if (!save()) { c.live = null; return; } render(); return; }

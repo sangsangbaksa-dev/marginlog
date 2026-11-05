@@ -337,12 +337,67 @@
         openSteps: open.length, overdue: open.filter(function (s) { return /^\d{4}-\d{2}-\d{2}$/.test(s.due) && s.due < today; }).length, strength: caseStrength(c) };
     });
   }
+  /* ---------- gallery, timeline, reminders, plain-text chronology (read-only views over the chain) ---------- */
+  /* every photo attached to an event, newest first; `voided` marks photos on entries that were voided (still kept) */
+  function photoIndex(c) {
+    var out = [], v = voidedIds(c.entries);
+    c.entries.filter(function (e) { return e.type === 'event'; }).forEach(function (e) {
+      (e.photos || []).forEach(function (p) { out.push({ id: p.id, h: p.h, at: e.at, entry: e.id, voided: !!v[e.id] }); });
+    });
+    return out.sort(function (a, b) { return a.at < b.at ? 1 : a.at > b.at ? -1 : 0; });
+  }
+  /* events grouped by calendar month (YYYY-MM), newest month first */
+  function monthGroups(evs) {
+    var groups = [], idx = {};
+    evs.slice().sort(function (a, b) { return a.at < b.at ? 1 : a.at > b.at ? -1 : 0; }).forEach(function (e) {
+      var ym = String(e.at).slice(0, 7);
+      if (!idx[ym]) { idx[ym] = { ym: ym, items: [] }; groups.push(idx[ym]); }
+      idx[ym].items.push(e);
+    });
+    return groups;
+  }
+  /* open reply deadlines across active cases: overdue ones, and those due within `days` days; soonest first */
+  function dueItems(cases, nowTs, days) {
+    var today = toLocalStamp(new Date(nowTs)).slice(0, 10), limit = addDays(today, clampInt(days == null ? 7 : days, 0, 90)), out = [];
+    (cases || []).forEach(function (c) {
+      if (!c || c.archived) return;
+      (c.steps || []).forEach(function (s) {
+        if (s.done || !/^\d{4}-\d{2}-\d{2}$/.test(s.due || '') || s.due > limit) return;
+        out.push({ caseId: c.id, caseName: c.name || '', kind: s.kind, stepId: s.id, due: s.due, overdue: s.due < today, daysLeft: Math.round((Date.parse(s.due + 'T00:00:00Z') - Date.parse(today + 'T00:00:00Z')) / 864e5) });
+      });
+    });
+    return out.sort(function (a, b) { return a.due < b.due ? -1 : a.due > b.due ? 1 : 0; });
+  }
+  /* plain-text chronology for pasting into an email or form. L takes the same labels as reportMarkdown. */
+  function chronologyText(c, L, nowTs, chain) {
+    var vd = voidedIds(c.entries), all = c.entries.filter(function (e) { return e.type === 'event'; }).slice().sort(function (a, b) { return a.at < b.at ? -1 : 1; }), out = [];
+    out.push(c.name || '', '');
+    if (c.counterpart) out.push(L.counterpart + ': ' + c.counterpart);
+    if (c.goal) out.push(L.goal + ': ' + c.goal);
+    out.push(L.generated + ': ' + toLocalStamp(new Date(nowTs)).replace('T', ' '), '');
+    out.push(L.timeline + ':', '');
+    all.forEach(function (e, i) {
+      var isV = !!vd[e.id];
+      out.push((i + 1) + '. ' + e.at.replace('T', ' ') + (e.sev ? ' | ' + L.sev + ' ' + e.sev + '/5' : '') + (e.dur ? ' | ' + e.dur + ' min' : '') + (e.tags.length ? ' | ' + e.tags.join(', ') : '') + (isLate(e) ? ' | ' + L.late : '') + (isV ? ' | ' + L.voidedBadge : ''));
+      e.text.split(/\r?\n/).forEach(function (line) { out.push('   ' + line); });
+      if (e.witness) out.push('   ' + L.witness + ': ' + e.witness);
+      if (e.photos.length) out.push('   ' + L.photos + ': ' + e.photos.length);
+      if (e.reported) out.push('   ' + L.reportedTo);
+      if (isV) out.push('   ' + L.voidedBadge + ' (' + vd[e.id].at.replace('T', ' ') + '): ' + vd[e.id].text.replace(/\s+/g, ' '));
+      addenda(c.entries, e.id).forEach(function (n) { out.push('   + ' + n.at.replace('T', ' ') + ': ' + n.text.replace(/\s+/g, ' ')); });
+      out.push('   ' + L.recordedAt + ' ' + toLocalStamp(new Date(e.rec)).replace('T', ' ') + ' | #' + e.hash.slice(0, 16));
+    });
+    out.push('', L.integrity + ':', chain && chain.ok ? L.chainOk.replace('{n}', c.entries.length).replace('{h}', chain.head) : L.chainBad);
+    return out.join('\n') + '\n';
+  }
+
   var api = {
     KINDS: KINDS, STEP_KINDS: STEP_KINDS, LATE_HOURS: LATE_HOURS,
     uid: uid, pad: pad, toLocalStamp: toLocalStamp, parseAt: parseAt, dayNum: dayNum, sha256Hex: sha256Hex, seal: seal, verifyChain: verifyChain, cleanTags: cleanTags, clampInt: clampInt,
     events: events, addenda: addenda, voidedIds: voidedIds, isLate: isLate, inQuiet: inQuiet, heatmap: heatmap, weekly: weekly, topBand: topBand, stats: stats,
     strength: strength, caseStrength: caseStrength, ladder: ladder, suggestNext: suggestNext, toCsv: toCsv, reportMarkdown: reportMarkdown, sanitizeCase: sanitizeCase,
-    tagCounts: tagCounts, readiness: readiness, addDays: addDays, noticeLetter: noticeLetter, toIcs: toIcs, encryptText: encryptText, decryptText: decryptText, overview: overview, calendarAll: calendarAll, digest: digest
+    tagCounts: tagCounts, readiness: readiness, addDays: addDays, noticeLetter: noticeLetter, toIcs: toIcs, encryptText: encryptText, decryptText: decryptText, overview: overview, calendarAll: calendarAll, digest: digest,
+    photoIndex: photoIndex, monthGroups: monthGroups, dueItems: dueItems, chronologyText: chronologyText
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.MLCore = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);
