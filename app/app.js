@@ -101,7 +101,7 @@
     h += c ? caseView(c) : emptyView();
     h += '</main><footer class="foot"><p>' + esc(t('privacy')) + '</p><p>' + esc(t('disclaimer')) + '</p></footer>';
     root.innerHTML = h;
-    hydratePhotos(); startLiveTick();
+    hydratePhotos(); startLiveTick(); paintAi();
   }
   function emptyView() {
     var h = '<section class="empty"><h2>' + esc(t('emptyH')) + '</h2><p>' + esc(t('emptyB')) + '</p><div class="kinds">';
@@ -248,6 +248,7 @@
     var names = I.stepNames(S.lang), done = {}; (c.steps || []).forEach(function (s) { done[s.kind] = 1; });
     var h = '<h3>' + esc(t('ladderH')) + '</h3><ol class="ladder">' + C.ladder(c).map(function (k, i) { return '<li class="' + (done[k] ? 'dn' : '') + '"><span class="num">' + (done[k] ? '✓' : i + 1) + '</span><div><b>' + esc(names[k]) + '</b><span>' + esc(t('stepHint_' + k)) + '</span></div><button type="button" class="ghost" data-act="addstep" data-kind="' + k + '">' + esc(t('logStep')) + '</button></li>'; }).join('') + '</ol>';
     h += '<div class="btns wrap"><button type="button" class="sec" data-act="letter">' + esc(t('ltrBtn')) + '</button>' + ((c.steps || []).some(function (s) { return s.due && !s.done; }) ? '<button type="button" class="ghost" data-act="dlics">' + esc(t('icsBtn')) + '</button>' : '') + '</div>';
+    h += aiPanel(c);
     h += '<h3>' + esc(t('stepsH')) + '</h3>';
     if (!(c.steps || []).length) return h + '<div class="empty small"><p>' + esc(t('stepsEmpty')) + '</p></div>';
     h += '<ul class="steps">' + c.steps.slice().sort(function (a, b) { return a.at < b.at ? 1 : -1; }).map(function (s) {
@@ -559,6 +560,75 @@
     tick(); liveTimer = setInterval(tick, 1000);
   }
 
+  /* ---------- AI analysis ----------
+     The panel always shows the built-in analysis (MLAI.localAnalysis, computed here, no network).
+     The API is called only from runAi(), on an explicit click. The key lives in localStorage; results live in memory only.
+     Model output is written with textContent only. */
+  var A = window.MLAI, AIS = {};
+  function aiKey() { try { return A.validateKey(localStorage.getItem(A.KEY_STORAGE) || '').key || ''; } catch (e) { return ''; } }
+  function aiSaveKey(raw) {
+    var v = A.validateKey(raw); if (!v.ok) return { err: 'key' };
+    try { localStorage.setItem(A.KEY_STORAGE, v.key); } catch (e) { return { err: 'storage' }; }
+    return { ok: true };
+  }
+  function removeAiKey(c) {
+    try { localStorage.removeItem(A.KEY_STORAGE); } catch (e) { /* nothing stored */ }
+    delete AIS[c.id]; S.aiMsg = { k: 'ai_removed' }; render();
+  }
+  function aiPanel(c) {
+    var key = aiKey(), h = '<section class="ai" aria-labelledby="ai-h"><h3 id="ai-h">' + esc(t('ai_h')) + '</h3><p class="hint">' + esc(t('ai_intro')) + '</p>';
+    h += '<details class="aisend"><summary>' + esc(t('ai_sendH')) + '</summary><p class="hint">' + esc(t('ai_sendBody')) + '</p></details>';
+    h += '<div class="aiblock" id="ai-local"></div>';
+    if (key) h += '<div class="btns wrap"><button type="button" class="pri" data-act="aiRun" data-id="' + esc(c.id) + '" id="ai-run">' + esc(t('ai_run')) + '</button><button type="button" class="ghost" data-act="aiKeyRemove">' + esc(t('ai_keyRemove')) + '</button></div>';
+    else h += '<form id="ai-keyform" class="aikey" autocomplete="off"><label for="ai-key">' + esc(t('ai_keyLabel')) + '</label><input id="ai-key" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" aria-describedby="ai-keyhint"><p class="hint" id="ai-keyhint">' + esc(t('ai_keyHint')) + '</p><p class="hint">' + esc(t('ai_keyNeeded')) + '</p><div class="btns"><button type="submit" class="sec">' + esc(t('ai_keySave')) + '</button></div></form>';
+    h += '<p id="ai-status" class="hint" role="status" aria-live="polite"></p><div id="ai-out"></div></section>';
+    return h;
+  }
+  function mk(tag, text, cls) { var e = document.createElement(tag); if (cls) e.className = cls; if (text != null) e.textContent = String(text); return e; }
+  function fillResult(box, res, heading, note) {
+    box.appendChild(mk('h4', heading));
+    if (note) box.appendChild(mk('p', note, 'hint'));
+    var p = mk('p'); p.appendChild(mk('b', t('ai_sumH'))); p.appendChild(document.createTextNode(' ' + res.summary)); box.appendChild(p);
+    box.appendChild(mk('h5', t('ai_gapsH')));
+    var ul = mk('ul'); res.gaps.forEach(function (g) { ul.appendChild(mk('li', g)); }); box.appendChild(ul);
+    box.appendChild(mk('h5', t('ai_nextH')));
+    box.appendChild(mk('p', res.nextStep));
+  }
+  function paintAi() {
+    var c = cur(), box = $('#ai-local'); if (!c || !box) return;
+    box.textContent = '';
+    fillResult(box, A.localAnalysis(c, now()), t('ai_localH'), t('ai_localNote'));
+    var st = AIS[c.id], stale = !!st && st.sig !== A.signature(c), out = $('#ai-out'), status = $('#ai-status'), run = $('#ai-run'), kf = $('#ai-keyform');
+    out.textContent = '';
+    if (st && st.status === 'done') fillResult(out, st.result, t('ai_aiH'), stale ? t('ai_stale') : '');
+    else if (st && st.status === 'error') out.appendChild(mk('p', t('ai_err_' + st.err), 'err'));
+    if (run) { var busy = !!st && st.status === 'busy'; run.disabled = busy; run.textContent = busy ? t('ai_busy') : t('ai_run'); }
+    var msg = S.aiMsg; S.aiMsg = null;
+    if (status) { status.className = msg && msg.err ? 'err' : 'hint'; status.textContent = msg ? t(msg.k) : ''; }
+    if (kf && !kf.getAttribute('data-bound')) kf.setAttribute('data-bound', '1'), kf && kf.addEventListener('submit', function (ev) {
+      ev.preventDefault();
+      var r = aiSaveKey($('#ai-key', kf).value);
+      if (r.err) { var s = $('#ai-status'); if (s) { s.className = 'err'; s.textContent = t('ai_err_' + r.err); } $('#ai-key', kf).focus(); return; }
+      S.aiMsg = { k: 'ai_keyOk' }; render();
+    });
+  }
+  function runAi(c) {
+    var key = aiKey(); if (!key) { S.aiMsg = { k: 'ai_keyNeeded', err: true }; return render(); }
+    var id = c.id, sig = A.signature(c), req = A.buildRequest(key, A.buildFacts(c, now()));
+    AIS[id] = { status: 'busy', sig: sig }; paintAi();
+    fetch(req.url, req.init).then(function (r) {
+      if (!r.ok) throw { status: r.status };
+      return r.json();
+    }).then(function (j) {
+      var res = A.parseOutput(A.extractText(j));
+      if (!res) throw { parse: true };
+      AIS[id] = { status: 'done', sig: sig, result: res }; S.aiMsg = { k: 'ai_done' };
+    }).catch(function (e) {
+      var code = e && e.status ? A.errorKind(e.status) : e && e.parse ? 'parse' : e instanceof TypeError ? 'net' : 'parse';
+      AIS[id] = { status: 'error', sig: sig, err: code };
+    }).then(function () { paintAi(); });
+  }
+
   /* ---------- events ---------- */
   root.addEventListener('click', async function (ev) {
     var b = ev.target.closest('[data-act]'); if (!b) return;
@@ -577,6 +647,8 @@
     if (act === 'livestart') { c.live = { start: now() }; if (!save()) { c.live = null; return; } render(); return; }
     if (act === 'livedrop') { var lv = c.live; c.live = null; if (!save()) { c.live = lv; return; } render(); toast(t('liveDropped'), t('undo'), function () { c.live = lv; save(); render(); }); return; }
     if (act === 'livestop') { var st = new Date(c.live.start); return entryDialog(c, { at: C.toLocalStamp(st), dur: Math.max(1, Math.ceil((now() - c.live.start) / 6e4)), live: true }); }
+    if (act === 'aiRun') return runAi(c);
+    if (act === 'aiKeyRemove') return removeAiKey(c);
     if (act === 'note') return noteDialog(c, id);
     if (act === 'void') return voidDialog(c, id);
     if (act === 'addstep') return stepDialog(c, b.getAttribute('data-kind'));

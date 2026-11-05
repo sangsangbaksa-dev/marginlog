@@ -11,6 +11,7 @@ Live: https://marginlog.pages.dev
 - **Evidence strength** score per entry with concrete tips.
 - **Escalation ladder** per case type (talk, written notice, complaint, mediation, authority/legal) with answer deadlines and overdue warnings.
 - **Report**: copy, print/PDF, Markdown, plain-text chronology (.txt), CSV (formula-injection safe), photos, and the seal check. The printed version drops app controls and the readiness checklist, and keeps the seal line and photo grid.
+- **AI analysis panel** (Steps tab, per case): explains the evidence gaps and the next escalation step in plain Korean. The built-in analysis (same readiness, evidence and ladder rules, computed on the device) is always shown, with or without a key. The AI call happens only when you press "Analyse with AI". Use your own Anthropic API key (stored in this browser under `marginlog-ai-key`; sent only to api.anthropic.com, model `claude-haiku-5-5`, direct from the browser). Only counts, dates, durations, severity, evidence flags and step timing are sent: no case name, entry text, notes, names, addresses, phone numbers or tags, and the other party appears as "당사자 A". The output is an estimate, not legal advice. No key means no network call.
 - Backup/restore (JSON incl. photos, seals re-checked on restore), search/filters, archive, delete with undo.
 - Optional encrypted backup: AES-GCM with a passphrase (PBKDF2-SHA256, 310k iterations, WebCrypto). A lost passphrase cannot be recovered.
 - All-cases overview: entries, last entry, overdue deadlines and evidence score per case, one tap to open. A search box filters the case list by name, type and status text.
@@ -26,7 +27,9 @@ Live: https://marginlog.pages.dev
 - The lock is a client-side check, the same model as the sister apps. It stops casual use, not a determined one.
 
 ## Layout
-- `app/` the PWA (`core.js` pure logic, `i18n.js`, `app.js` UI, `license.js` paid-access check, `config.js`, `sw.js`, `manifest.json`)
+- `app/` the PWA (`core.js` pure logic, `ai.js` AI key check, anonymised facts, request/parse and the built-in analysis, `i18n.js`, `app.js` UI, `license.js` paid-access check, `config.js`, `sw.js`, `manifest.json`)
 - `scripts/build-site.js` (reads `app/config.js`) generates the localized landing pages from `scripts/landing-strings.json`; `scripts/build.js` produces `dist/` for Cloudflare Pages (project `marginlog`, no server functions)
-- Tests: `node --test test/*.test.js` (unit, i18n parity, site build); `NODE_PATH=$(npm root -g) node test/e2e.js [shots-dir]` (Playwright)
+- Tests: `npm test` (`node --test test/*.test.js`: unit, AI logic and privacy checks, i18n parity, site build); `NODE_PATH=$(npm root -g) node test/e2e.js [shots-dir]` (Playwright)
+- Not legal advice. AI output is an estimate, not legal advice.
+- CSP (`_headers`): `connect-src` allows `https://api.anthropic.com` only, for the optional AI panel.
 - Not legal advice. Evidence rules differ by country.

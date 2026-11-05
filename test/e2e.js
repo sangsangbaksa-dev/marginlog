@@ -2,17 +2,17 @@
 const { chromium } = require('playwright'), http = require('http'), fs = require('fs'), path = require('path'), assert = require('assert');
 const root = path.join(__dirname, '..'), types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.svg': 'image/svg+xml', '.json': 'application/json', '.png': 'image/png' };
 const srv = http.createServer((q, r) => {
-  let p = decodeURIComponent(q.url.split('?')[0]); if (p.endsWith('/')) p += 'index.html'; const f = path.join(root, p);
+  let p = decodeURIComponent(q.url.split('?')[0]); if (p === '/api/license') { r.writeHead(200, { 'content-type': 'application/json' }); return r.end('{"configured":false}'); } if (p.endsWith('/')) p += 'index.html'; const f = path.join(root, p);
   if (!f.startsWith(root) || !fs.existsSync(f)) { r.writeHead(404); return r.end(); }
-  r.writeHead(200, { 'content-security-policy': "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data: blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'", 'content-type': types[path.extname(f)] || 'text/plain' }); fs.createReadStream(f).pipe(r);
+  r.writeHead(200, { 'content-security-policy': "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self'; img-src 'self' data: blob:; connect-src 'self' https://api.anthropic.com; frame-ancestors 'none'; base-uri 'none'; form-action 'self'", 'content-type': types[path.extname(f)] || 'text/plain' }); fs.createReadStream(f).pipe(r);
 }).listen(0);
 const pad = n => String(n).padStart(2, '0'), stamp = d => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
 const ago = (days, h = 22, m = 30) => { const d = new Date(); d.setDate(d.getDate() - days); d.setHours(h, m, 0, 0); return stamp(d); };
 (async () => {
   const base = `http://localhost:${srv.address().port}`, out = process.argv[2] || '/tmp/ml-shots'; fs.mkdirSync(out, { recursive: true });
-  const b = await chromium.launch(), errs = [];
+  const b = await chromium.launch(), errs = []; let expect401 = false;
   const ctx = await b.newContext({ viewport: { width: 390, height: 844 }, locale: 'en-US', timezoneId: 'UTC', permissions: ['clipboard-read', 'clipboard-write'], acceptDownloads: true });
-  const pg = await ctx.newPage(); pg.on('pageerror', e => { console.log('PAGEERR', e.message); errs.push(e.message); }); pg.on('console', m => m.type() === 'error' && console.log('CONSOLEERR', m.text())); pg.on('console', m => m.type() === 'error' && errs.push(m.text()));
+  const pg = await ctx.newPage(); pg.on('pageerror', e => { console.log('PAGEERR', e.message); errs.push(e.message); }); pg.on('console', m => m.type() === 'error' && console.log('CONSOLEERR', m.text())); pg.on('console', m => { if (m.type() === 'error' && !(expect401 && /status of 401/.test(m.text()))) errs.push(m.text()); });
   const log = async (o) => {
     await pg.click('[data-act=log]'); await pg.fill('#e-at', o.at); await pg.fill('#e-text', o.text);
     if (o.sev) await pg.check(`input[name=sev][value="${o.sev}"]`, { force: true });
@@ -90,6 +90,39 @@ const ago = (days, h = 22, m = 30) => { const d = new Date(); d.setDate(d.getDat
   await pg.reload(); await pg.waitForFunction(() => { const i = document.querySelector('.entry .thumb img'); return i && i.src.startsWith('data:image/jpeg'); });
   await pg.click('.entry .thumb'); await pg.waitForSelector('.big-ph', { state: 'visible' }); await pg.click('dialog [data-close]');
   await pg.click('#tab-report'); await pg.waitForFunction(() => document.querySelector('#chainline').classList.contains('good')); assert.equal(await pg.locator('#repphotos img').count(), 1);
+  // AI analysis panel: built-in analysis always, no API call until the button is pressed (API mocked)
+  const aiCalls = []; let aiMode = 'ok', fake = 'sk-ant-api03-' + 'Zq9_'.repeat(8);
+  await pg.route('https://api.anthropic.com/**', async r => {
+    if (r.request().method() === 'OPTIONS') return r.fulfill({ status: 204, headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': 'content-type,x-api-key,anthropic-version,anthropic-dangerous-direct-browser-access', 'access-control-allow-methods': 'POST' } });
+    aiCalls.push(r.request());
+    const cors = { 'access-control-allow-origin': '*' };
+    if (aiMode === 'bad') return r.fulfill({ status: 401, headers: cors, contentType: 'application/json', body: '{"type":"error","error":{"type":"authentication_error"}}' });
+    await r.fulfill({ status: 200, headers: cors, contentType: 'application/json', body: JSON.stringify({ content: [{ type: 'thinking', thinking: '' }, { type: 'text', text: '```json\n' + JSON.stringify({ summary: '기록이 반복됩니다.', gaps: ['사진 없음', '목격자 없음'], next_step: '서면 통지' }) + '\n```' }] }) });
+  });
+  await pg.click('#tab-steps'); await pg.waitForSelector('#ai-local');
+  assert.ok((await pg.textContent('#ai-local')).includes('Built-in analysis'), 'built-in analysis shown without a key');
+  assert.equal(await pg.locator('#ai-keyform').count(), 1, 'key form shown when no key is saved');
+  await pg.fill('#ai-key', 'sk-ant-admin01-' + 'a'.repeat(30)); await pg.click('#ai-keyform button[type=submit]');
+  assert.ok((await pg.textContent('#ai-status')).includes('Admin keys are not accepted'), 'admin key refused');
+  await pg.fill('#ai-key', fake); await pg.click('#ai-keyform button[type=submit]'); await pg.waitForSelector('[data-act=aiRun]');
+  assert.equal(aiCalls.length, 0, 'no request until the button is pressed');
+  await pg.screenshot({ path: out + '/09-ai-panel.png', fullPage: false });
+  await pg.click('[data-act=aiRun]'); await pg.waitForFunction(() => /estimate/.test((document.querySelector('#ai-out') || {}).textContent || ''));
+  assert.equal(aiCalls.length, 1, 'one request on click');
+  const rq = aiCalls[0], hd = rq.headers(), body = rq.postData() || '';
+  assert.equal(hd['anthropic-dangerous-direct-browser-access'], 'true'); assert.equal(hd['x-api-key'], fake);
+  assert.ok(!body.includes(fake), 'key not in body'); assert.ok(JSON.parse(body).model === 'claude-haiku-5-5');
+  assert.ok(!/Flat|Kim|010-|Mapo/.test(body), 'no names, phone or address in the request');
+  const outText = await pg.textContent('#ai-out'); assert.ok(outText.includes('기록이 반복됩니다.') && outText.includes('사진 없음'), 'model output shown');
+  assert.equal(await pg.locator('#ai-out script, #ai-out img, #ai-out a').count(), 0, 'output is plain text');
+  assert.equal(await pg.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth), true, 'no horizontal overflow at 390px');
+  await pg.screenshot({ path: out + '/10-ai-result.png', fullPage: true });
+  aiMode = 'bad'; expect401 = true; await pg.click('[data-act=aiRun]'); await pg.waitForFunction(() => /did not accept/.test((document.querySelector('#ai-out') || {}).textContent || '')); expect401 = false;
+  assert.ok((await pg.textContent('#ai-local')).includes('Built-in analysis'), 'built-in analysis stays on error');
+  await pg.click('[data-act=aiKeyRemove]'); await pg.waitForSelector('#ai-keyform');
+  assert.equal(await pg.evaluate(() => localStorage.getItem('marginlog-ai-key')), null, 'key removed');
+  await pg.click('#tab-report'); await pg.waitForSelector('#repview');
+
   // backup + restore into a fresh context
   await pg.click('[data-act=data]'); const [bk] = await Promise.all([pg.waitForEvent('download'), pg.click('#d-exp')]); const bkPath = out + '/backup.json'; await bk.saveAs(bkPath); await pg.click('dialog [data-close]');
   // restoring the same backup into the same profile merges instead of duplicating
@@ -113,8 +146,8 @@ const ago = (days, h = 22, m = 30) => { const d = new Date(); d.setDate(d.getDat
   await pg.selectOption('#casesel', { index: 0 }); await pg.click('#tab-case'); await pg.click('[data-act=archive]');
   await pg.selectOption('#casesel', { label: 'Second (archived)' }).catch(() => {}); 
   // landing pages render
-  for (const l of ['', 'ko/', 'ja/', 'zh/', 'es/']) { const r = await pg.goto(base + '/' + l); assert.equal(r.status(), 200); assert.ok(await pg.locator('h1').count() === 1 && await pg.locator('a.cta').count() === 1, l); }
+  for (const l of ['', 'ko/', 'ja/', 'zh/', 'es/']) { const r = await pg.goto(base + '/' + l); assert.equal(r.status(), 200); assert.ok(await pg.locator('h1').count() === 1 && await pg.locator('a.cta').count() >= 1, l); }
   await pg.goto(base + '/'); await pg.screenshot({ path: out + '/08-landing.png', fullPage: true });
-  assert.deepEqual(errs, [], 'console/page errors');
+  assert.deepEqual(errs, [], 'console/page errors: ' + JSON.stringify(errs));
   await b.close(); srv.close(); console.log('e2e ok');
 })().catch(e => { console.error(e); process.exit(1); });

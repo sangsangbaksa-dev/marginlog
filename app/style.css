@@ -98,3 +98,14 @@ textarea.letter{font:.9rem/1.5 ui-monospace,Menlo,Consolas,monospace;margin-top:
 .gal .thumb{width:100%;padding:0;min-height:0;border:0;background:none}
 .gal .thumb img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:var(--soft)}
 .galview{margin:8px 0 12px}.galview .big-ph{margin:0 auto 8px}.galview[hidden]{display:none}
+/* AI analysis panel (Steps tab) */
+.ai{margin-top:12px;border-top:1px solid var(--line);padding-top:4px}
+.ai details.aisend{margin:8px 0}.ai details.aisend summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:600}
+.aiblock{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:12px;margin-top:8px}
+.aiblock h4{margin:0 0 4px;font-size:.98rem}
+.aiblock h5{margin:10px 0 2px;font-size:.9rem;color:var(--mut)}
+.aiblock p{margin:4px 0;overflow-wrap:anywhere}
+.aiblock ul{margin:4px 0;padding-left:20px}
+.aiblock li{overflow-wrap:anywhere;margin:2px 0}
+.aikey label{display:block;margin:12px 0 4px;font-size:.9rem;font-weight:600}
+#ai-status{margin:8px 0 0}#ai-status.err,.aiblock .err{color:var(--warn);font-weight:600}
