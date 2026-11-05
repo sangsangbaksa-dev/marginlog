@@ -1,5 +1,5 @@
-:root{--bg:#f6f4ef;--card:#fff;--ink:#1d2229;--mut:#5d6672;--line:#d9d5cb;--acc:#1f5f5b;--acc-ink:#fff;--warn:#a4411a;--ok:#2c7a3f;--soft:#e9efed;--focus:#0b57d0;--r:10px;--r-lg:14px;--gap:12px;color-scheme:light}
-@media (prefers-color-scheme:dark){:root{--bg:#14171a;--card:#1d2227;--ink:#eceff2;--mut:#a4adb8;--line:#343c44;--acc:#6fc3bb;--acc-ink:#0b1a19;--warn:#f08b5f;--ok:#7bd08c;--soft:#22302f;--focus:#8ab4ff;color-scheme:dark}}
+:root{--bg:#F8FAFC;--card:#fff;--ink:#0A1628;--mut:#5d6672;--line:#dfe5ec;--acc:#0B6E4F;--acc-ink:#fff;--warn:#a4411a;--ok:#2c7a3f;--soft:#e7f3ee;--focus:#0B6E4F;--r:10px;--r-lg:14px;--gap:12px;color-scheme:light}
+@media (prefers-color-scheme:dark){:root{--bg:#0b1220;--card:#111b2b;--ink:#e6edf5;--mut:#9aa8bb;--line:#223047;--acc:#5ad3a4;--acc-ink:#06231a;--warn:#f08b5f;--ok:#7bd08c;--soft:#133228;--focus:#7fe0b8;color-scheme:dark}}
 *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,"Noto Sans KR","Noto Sans JP","Noto Sans SC",sans-serif}
 .wrap{max-width:680px;margin:0 auto;padding:0 16px 40px}
@@ -129,3 +129,19 @@ button:disabled{opacity:.5;cursor:not-allowed}
 .empty p{font-size:.95rem}
 .foot{border-top:1px solid var(--line);padding-top:14px}
 @media (prefers-reduced-motion:reduce){.kind{transition:none}}
+
+/* Site pattern pass: sticky app header with logo mark and tagline, site footer. */
+header.top { position: sticky; top: 0; z-index: 5; background: var(--bg); margin: 0 -16px; padding-left: 16px; padding-right: 16px; border-bottom: 1px solid var(--line); }
+.brand-wrap { display: grid; gap: 0; min-width: 0; }
+.brand-h { margin: 0; font: 700 1.2rem/1.2 Georgia, "Times New Roman", "Nanum Myeongjo", "Batang", serif; }
+.brand-h .brand { display: inline-flex; align-items: center; gap: 8px; color: var(--ink); text-decoration: none; }
+.brand-tag { margin: 0; font-size: .8rem; color: var(--mut); max-width: 46ch; }
+.mark { width: 28px; height: 28px; flex: none; display: block; }
+.mark .m-bg { fill: var(--acc); }
+.mark .m-bar { fill: var(--acc-ink); }
+@media (max-width: 540px) { .brand-tag { display: none; } }
+.site-foot { border-top: 1px solid var(--line); margin-top: 28px; padding: 22px 0 8px; display: grid; gap: 12px 20px; color: var(--mut); font-size: .9rem; }
+@media (min-width: 720px) { .site-foot { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } .site-foot .foot-copy { grid-column: 1 / -1; } }
+.site-foot .brand { color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 700; }
+.foot-brand { display: grid; gap: 6px; }
+.foot-desc, .foot-disc, .foot-copy { margin: 0; }

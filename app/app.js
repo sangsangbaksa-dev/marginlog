@@ -93,13 +93,13 @@
   }
   function renderInner() {
     document.documentElement.lang = S.lang; document.title = 'Marginlog';
-    var c = cur(), h = '<header class="top"><h1>Marginlog</h1><div class="topbtns"><label class="sr" for="lang">' + esc(t('language')) + '</label><select id="lang">' +
+    var c = cur(), h = '<header class="top"><div class="brand-wrap"><h1 class="brand-h"><a class="brand" href="./"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect class="m-bg" width="64" height="64" rx="14"/><rect class="m-bar" x="14" y="18" width="36" height="6" rx="3"/><rect class="m-bar" x="14" y="30" width="22" height="6" rx="3" opacity="0.55"/><rect class="m-bar" x="14" y="42" width="30" height="6" rx="3" opacity="0.85"/></svg><span>Marginlog</span></a></h1><p class="brand-tag">' + esc(t('appTagline')) + '</p></div><div class="topbtns"><label class="sr" for="lang">' + esc(t('language')) + '</label><select id="lang">' +
       Object.keys(I.L).map(function (k) { return '<option value="' + k + '"' + (k === S.lang ? ' selected' : '') + '>' + esc(I.L[k].name) + '</option>'; }).join('') +
       '</select><button type="button" class="ghost" data-act="overview">' + esc(t('overviewBtn')) + '</button><button type="button" class="ghost" data-act="data">' + esc(t('dataBtn')) + '</button></div></header>';
     h += '<main id="main">';
     h += remindersBlock();
     h += c ? caseView(c) : emptyView();
-    h += '</main><footer class="foot"><p>' + esc(t('privacy')) + '</p><p>' + esc(t('disclaimer')) + '</p></footer>';
+    h += '</main><footer class="site-foot"><div class="foot-brand"><a class="brand" href="./"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect class="m-bg" width="64" height="64" rx="14"/><rect class="m-bar" x="14" y="18" width="36" height="6" rx="3"/><rect class="m-bar" x="14" y="30" width="22" height="6" rx="3" opacity="0.55"/><rect class="m-bar" x="14" y="42" width="30" height="6" rx="3" opacity="0.85"/></svg><span>Marginlog</span></a><p class="foot-desc">' + esc(t('footNote')) + '</p><p class="foot-desc">' + esc(t('privacy')) + '</p></div><p class="foot-disc">' + esc(t('disclaimer')) + '</p><p class="foot-copy">' + esc(t('footCopy')) + '</p></footer>';
     root.innerHTML = h;
     hydratePhotos(); startLiveTick(); paintAi();
   }

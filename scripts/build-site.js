@@ -16,11 +16,11 @@ for (const lang of Object.keys(S)) {
   const cta = buy ? `<a class="cta" href="${esc(buy)}" rel="noopener">${esc(s.buyCta)}</a><p><a href="${pre}app/">${esc(s.haveKey)}</a></p>` : `<a class="cta" href="${pre}app/">${esc(s.cta)}</a>`;
   const html = `<!doctype html>
 <html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>${esc(s.title)}</title><meta name="description" content="${esc(s.desc)}"><meta name="theme-color" content="#1f5f5b">
+<title>${esc(s.title)}</title><meta name="description" content="${esc(s.desc)}"><meta name="theme-color" content="#0B6E4F">
 <meta property="og:title" content="${esc(s.title)}"><meta property="og:description" content="${esc(s.desc)}"><meta property="og:image" content="${SITE}/og.png"><meta property="og:type" content="website">
 <link rel="canonical" href="${SITE}/${lang === 'en' ? '' : lang + '/'}">${alt}
 <link rel="icon" href="${pre}icon.svg" type="image/svg+xml"><link rel="stylesheet" href="${pre}landing.css"></head>
-<body><header class="bar"><a class="brand" href="./"><img src="${pre}icon.svg" alt="" width="28" height="28">Marginlog</a><nav aria-label="${esc(s.nav)}">${nav}</nav></header>
+<body><header class="bar"><a class="brand" href="./"><img src="${pre}icon.svg" alt="" width="30" height="30">Marginlog</a><nav aria-label="${esc(s.nav)}">${nav}</nav><a class="hcta" href="${buy || pre + 'app/'}"${buy ? ' rel="noopener"' : ''}>${esc(s.cta)}</a></header>
 <main>
 <section class="hero"><div class="hero-t"><p class="eyebrow">${esc(s.eyebrow)}</p><h1>${esc(s.h1)}</h1><p class="lead">${esc(s.lead)}</p>${cta}</div>
 <figure class="mock" aria-label="${esc(s.demoH)}"><div class="mock-h"><b>${esc(s.demoH)}</b><span class="ok">✓ ${esc(s.demoSeal)}</span></div>
@@ -32,7 +32,7 @@ for (const lang of Object.keys(S)) {
 <section class="pay"><h2>${esc(s.payH)}</h2><p>${esc(s.payB)}</p></section>
 <section><h2>${esc(s.faqH)}</h2><div class="faq">${s.faq.map(q => `<details><summary>${esc(q[0])}</summary><p>${esc(q[1])}</p></details>`).join('')}</div></section>
 <section class="final"><h2>${esc(s.tryH)}</h2><p>${esc(s.tryB)}</p>${cta}</section></main>
-<footer><p>${esc(s.disc)}</p></footer></body></html>
+<footer class="site-foot"><div class="foot-brand"><a class="brand" href="./"><img src="${pre}icon.svg" alt="" width="26" height="26">Marginlog</a><p class="foot-desc">${esc(s.fnote)}</p></div><p class="foot-disc">${esc(s.disc)}</p><p class="foot-copy">${esc(s.fcopy)}</p></footer></body></html>
 `;
   fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, 'index.html'), html);
 }
