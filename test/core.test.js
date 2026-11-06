@@ -236,3 +236,16 @@ test('plain-text chronology keeps order and text, and states the seal result', a
   assert.ok(txt.includes('Seal intact. Sealed records: 2'));
   assert.ok(C.chronologyText(c, L, NOW, { ok: false }).includes(I.L.en.chainBad));
 });
+
+
+test('date filters are inclusive, search addenda and export only results with context', async () => {
+ const c=await mk([{id:'a',at:'2026-11-01T08:00',text:'서울 소음 기록',tags:['소음']},{id:'b',at:'2026-11-02T09:00',text:'다른 기록'}]);
+ c.entries.push(await C.seal(c.entries.at(-1).hash,{type:'note',ref:'a',at:'2026-11-03T10:00',rec:NOW,text:'관리인 확인'}));
+ const snapshot=JSON.stringify(c);
+ const f={from:'2026-11-01',to:'2026-11-01',q:'관리인'};
+ assert.deepEqual(C.filterEvents(c,f).map(e=>e.id),['a']);
+ const csv=C.toCsv(c,f);
+ assert.ok(csv.includes('서울 소음 기록')); assert.ok(csv.includes('관리인 확인')); assert.ok(!csv.includes('다른 기록'));
+ assert.equal(C.filterEvents(c,{from:'2026-11-03',to:'2026-11-01'}).length,0);
+ assert.equal(JSON.stringify(c),snapshot);
+});

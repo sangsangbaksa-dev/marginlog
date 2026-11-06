@@ -171,9 +171,22 @@
     if (/^[=+\-@\t\r]/.test(v)) v = "'" + v;
     return /[",\n\r]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
   }
-  function toCsv(c) {
+  /* Filtering is a view. The complete chain remains intact for notes and void reasons. */
+  function filterEvents(c, f) {
+    f = f || {}; var vd = voidedIds(c.entries), q = String(f.q || '').trim().toLowerCase();
+    return c.entries.filter(function (e) {
+      if (e.type !== 'event' || (!f.voided && vd[e.id])) return false;
+      var day = e.at.slice(0, 10);
+      if ((f.from && day < f.from) || (f.to && day > f.to)) return false;
+      if (f.sev && e.sev < f.sev) return false;
+      if (f.tag && e.tags.indexOf(f.tag) < 0) return false;
+      var text = e.text + ' ' + e.witness + ' ' + e.tags.join(' ') + ' ' + addenda(c.entries, e.id).map(function (n) { return n.text; }).join(' ');
+      return !q || text.toLowerCase().indexOf(q) >= 0;
+    });
+  }
+  function toCsv(c, filters) {
     var rows = [['when', 'recorded', 'late', 'severity', 'minutes', 'tags', 'witness', 'reported', 'text', 'notes', 'voided', 'hash']], vd = voidedIds(c.entries);
-    c.entries.filter(function (e) { return e.type === 'event'; }).slice().sort(function (a, b) { return a.at < b.at ? -1 : 1; }).forEach(function (e) {
+    (filters ? filterEvents(c, filters) : c.entries.filter(function (e) { return e.type === 'event'; })).slice().sort(function (a, b) { return a.at < b.at ? -1 : 1; }).forEach(function (e) {
       rows.push([e.at.replace('T', ' '), new Date(e.rec).toISOString(), isLate(e) ? 'yes' : '', e.sev || '', e.dur || '', e.tags.join(' '), e.witness, e.reported ? 'yes' : '', e.text, addenda(c.entries, e.id).map(function (n) { return n.text; }).join(' | '), vd[e.id] ? vd[e.id].text : '', e.hash.slice(0, 16)]);
     });
     return rows.map(function (r) { return r.map(csvCell).join(','); }).join('\r\n') + '\r\n';
@@ -395,7 +408,7 @@
     KINDS: KINDS, STEP_KINDS: STEP_KINDS, LATE_HOURS: LATE_HOURS,
     uid: uid, pad: pad, toLocalStamp: toLocalStamp, parseAt: parseAt, dayNum: dayNum, sha256Hex: sha256Hex, seal: seal, verifyChain: verifyChain, cleanTags: cleanTags, clampInt: clampInt,
     events: events, addenda: addenda, voidedIds: voidedIds, isLate: isLate, inQuiet: inQuiet, heatmap: heatmap, weekly: weekly, topBand: topBand, stats: stats,
-    strength: strength, caseStrength: caseStrength, ladder: ladder, suggestNext: suggestNext, toCsv: toCsv, reportMarkdown: reportMarkdown, sanitizeCase: sanitizeCase,
+    strength: strength, caseStrength: caseStrength, ladder: ladder, suggestNext: suggestNext, filterEvents: filterEvents, toCsv: toCsv, reportMarkdown: reportMarkdown, sanitizeCase: sanitizeCase,
     tagCounts: tagCounts, readiness: readiness, addDays: addDays, noticeLetter: noticeLetter, toIcs: toIcs, encryptText: encryptText, decryptText: decryptText, overview: overview, calendarAll: calendarAll, digest: digest,
     photoIndex: photoIndex, monthGroups: monthGroups, dueItems: dueItems, chronologyText: chronologyText
   };

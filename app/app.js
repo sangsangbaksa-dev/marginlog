@@ -141,12 +141,6 @@
     return '<p class="sugg ' + (sg.key === 'overdue' ? 'warn' : '') + '"><b>' + esc(t('nextStep')) + '</b> ' + esc(msg) + (sg.kind ? ' <button type="button" class="link" data-act="addstep" data-kind="' + sg.kind + '">' + esc(t('logStep')) + '</button>' : '') + (sg.step ? ' <button type="button" class="link" data-act="stepdone" data-id="' + esc(sg.step.id) + '">' + esc(t('markAnswered')) + '</button>' : '') + '</p>';
   }
 
-  function matches(e, c) {
-    var f = S.f; if (f.sev && e.sev < f.sev) return false;
-    if (f.tag && e.tags.indexOf(f.tag) < 0) return false;
-    if (f.q) { var q = f.q.toLowerCase(); if ((e.text + ' ' + e.witness + ' ' + e.tags.join(' ') + ' ' + C.addenda(c.entries, e.id).map(function (n) { return n.text; }).join(' ')).toLowerCase().indexOf(q) < 0) return false; }
-    return true;
-  }
   function logTools(c) {
     var n = C.photoIndex(c).length, tl = S.view === 'timeline';
     return '<div class="btns sm wrap logtools"><div class="seg" role="group" aria-label="' + esc(t('viewWord')) + '"><button type="button" aria-pressed="' + (!tl) + '" data-act="view" data-id="list">' + esc(t('viewList')) + '</button><button type="button" aria-pressed="' + tl + '" data-act="view" data-id="timeline">' + esc(t('viewTimeline')) + '</button></div>' +
@@ -194,11 +188,15 @@
     var v = C.voidedIds(c.entries), all = c.entries.filter(function (e) { return e.type === 'event' && (S.f.voided || !v[e.id]); });
     if (!c.entries.some(function (e) { return e.type === 'event'; })) return '<div class="empty small"><h3>' + esc(t('logEmptyH')) + '</h3><p>' + esc(t('logEmptyB')) + '</p></div>';
     var tags = {}; C.events(c.entries).forEach(function (e) { e.tags.forEach(function (x) { tags[x] = 1; }); });
-    var list = all.filter(function (e) { return matches(e, c); }).sort(function (a, b) { return a.at < b.at ? 1 : -1; });
+    var list = C.filterEvents(c, S.f).sort(function (a, b) { return a.at < b.at ? 1 : -1; });
     var h = '<form class="filters" role="search" id="filters" autocomplete="off"><label class="sr" for="fq">' + esc(t('search')) + '</label><input id="fq" type="search" placeholder="' + esc(t('search')) + '" value="' + esc(S.f.q) + '" maxlength="60">' +
       '<label class="sr" for="ftag">' + esc(t('tagsWord')) + '</label><select id="ftag"><option value="">' + esc(t('anyTag')) + '</option>' + Object.keys(tags).sort().map(function (x) { return '<option' + (S.f.tag === x ? ' selected' : '') + ' value="' + esc(x) + '">' + esc(x) + '</option>'; }).join('') + '</select>' +
       '<label class="sr" for="fsev">' + esc(t('sevWord')) + '</label><select id="fsev"><option value="0">' + esc(t('anySev')) + '</option>' + [2, 3, 4, 5].map(function (n) { return '<option' + (S.f.sev === n ? ' selected' : '') + ' value="' + n + '">' + esc(t('sevMin', { n: n })) + '</option>'; }).join('') + '</select>' +
-      '<label class="chk"><input type="checkbox" id="fvoid"' + (S.f.voided ? ' checked' : '') + '> ' + esc(t('showVoided')) + '</label></form>' + logTools(c);
+      '<label class="chk"><input type="checkbox" id="fvoid"' + (S.f.voided ? ' checked' : '') + '> ' + esc(t('showVoided')) + '</label>' +
+      '<label class="date-filter" for="ffrom">' + esc(t('dateFrom')) + '<input type="date" id="ffrom" value="' + esc(S.f.from || '') + '"></label>' +
+      '<label class="date-filter" for="fto">' + esc(t('dateTo')) + '<input type="date" id="fto" value="' + esc(S.f.to || '') + '"></label></form>' +
+      '<div class="filter-actions btns sm wrap"><button type="button" class="ghost" data-act="clearf">' + esc(t('clearFilters')) + '</button><button type="button" class="sec" data-act="dlfiltered"' + (!list.length ? ' disabled' : '') + '>' + esc(t('exportFiltered')) + '</button><span class="cap">' + esc(t('filteredHint')) + '</span></div>' +
+      (S.f.from && S.f.to && S.f.from > S.f.to ? '<p class="err" role="status">' + esc(t('dateOrder')) + '</p>' : '') + logTools(c);
     if (!list.length) return h + '<div class="empty small"><p>' + esc(t(!all.length ? 'allVoided' : 'noMatch')) + '</p><button type="button" class="ghost" data-act="clearf">' + esc(t('clearFilters')) + '</button></div>';
     if (S.view === 'timeline') return h + '<p class="count" role="status">' + esc(t('showing', { n: list.length, t: all.length })) + '</p>' + timelineView(list, v);
     h += '<p class="count" role="status">' + esc(t('showing', { n: list.length, t: all.length })) + '</p><ol class="entries">';
@@ -582,7 +580,7 @@
     if (act === 'addstep') return stepDialog(c, b.getAttribute('data-kind'));
     if (act === 'stepdone') { var sd = (c.steps || []).filter(function (s) { return s.id === id; })[0]; if (sd) { sd.done = true; if (!save()) { sd.done = false; return; } } render(); if (S.tab === 'report') fillReport(); return; }
     if (act === 'stepdel') { var del = c.steps.filter(function (s) { return s.id === id; })[0]; var oldSteps = c.steps; c.steps = c.steps.filter(function (s) { return s.id !== id; }); if (!save()) { c.steps = oldSteps; return; } render(); toast(t('stepRemoved'), t('undo'), function () { c.steps.push(del); if (!save()) c.steps.pop(); render(); }); return; }
-    if (act === 'clearf') { S.f = { q: '', tag: '', sev: 0, voided: S.f.voided }; return render(); }
+    if (act === 'clearf') { S.f = { q: '', tag: '', sev: 0, voided: false }; return render(); }
     if (act === 'editcase') return caseDialog(null, c);
     if (act === 'archive') { c.archived = !c.archived; if (!save()) { c.archived = !c.archived; return; } render(); toast(t(c.archived ? 'archivedMsg' : 'unarchivedMsg')); return; }
     if (act === 'delcase') {
@@ -600,6 +598,7 @@
     if (act === 'dlmd') { var md2 = await fillReport(); return download('marginlog-' + slug(c.name) + '.md', 'text/markdown', md2); }
     if (act === 'letter') return letterDialog(c);
     if (act === 'dlics') { var ics = C.toIcs(c, letterLabels(), now()); if (!ics) return toast(t('icsNone')); return download('marginlog-deadlines-' + slug(c.name) + '.ics', 'text/calendar', ics); }
+    if (act === 'dlfiltered') return download('marginlog-' + slug(c.name) + '-filtered.csv', 'text/csv', '\ufeff' + C.toCsv(c, S.f));
     if (act === 'dlcsv') return download('marginlog-' + slug(c.name) + '.csv', 'text/csv', '﻿' + C.toCsv(c));
     if (act === 'print') { await fillReport(); return window.print(); }
   });
@@ -607,6 +606,7 @@
     var el = ev.target;
     if (el.id === 'lang') { S.lang = el.value; save(); render(); if (S.tab === 'report') fillReport(); }
     else if (el.id === 'casesel') { S.cur = el.value; S.f = { q: '', tag: '', sev: 0, voided: false }; save(); render(); if (S.tab === 'report') fillReport(); }
+    else if (el.id === 'ffrom' || el.id === 'fto') { S.f[el.id === 'ffrom' ? 'from' : 'to'] = el.value; render(); var date = $('#' + el.id); if (date) date.focus(); }
     else if (el.id === 'ftag') { S.f.tag = el.value; render(); }
     else if (el.id === 'fsev') { S.f.sev = +el.value; render(); }
     else if (el.id === 'fvoid') { S.f.voided = el.checked; render(); }
