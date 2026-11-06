@@ -261,3 +261,21 @@ test('event search matches equivalent Korean and accent forms without modifying 
  assert.equal(JSON.stringify(c),original);
  assert.equal((await C.verifyChain(c.entries)).ok,true);
 });
+
+
+test('prototype-like tags and event IDs remain ordinary record data', async () => {
+  const c = await mk([{ id: 'constructor', at: '2026-11-01T10:00', tags: ['__proto__', 'constructor', 'tostring', '__proto__'] }]);
+  const before = JSON.stringify(c.entries);
+  assert.equal(C.events(c.entries).length, 1);
+  assert.equal(C.events([{ type: 'event', id: '__proto__' }]).length, 1);
+  assert.deepEqual(c.entries[0].tags, ['__proto__', 'constructor', 'tostring']);
+  assert.deepEqual(C.tagCounts(C.events(c.entries)).map(x => [x.tag, x.n]), [['__proto__', 1], ['constructor', 1], ['tostring', 1]]);
+  assert.equal(C.filterEvents(c, {}).length, 1);
+  assert.match(C.toCsv(c, {}), /loud music/);
+  assert.equal(JSON.stringify(c.entries), before);
+  assert.equal((await C.verifyChain(c.entries)).ok, true);
+  const voidRecord = await C.seal(c.entries[0].hash, { id: 'v', type: 'void', ref: 'constructor', at: '2026-11-01T10:05', rec: NOW, text: 'duplicate record' });
+  c.entries.push(voidRecord);
+  assert.equal(C.events(c.entries).length, 0);
+  assert.equal((await C.verifyChain(c.entries)).ok, true);
+});

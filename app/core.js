@@ -61,7 +61,7 @@
   }
   function clampInt(v, lo, hi) { v = Math.round(Number(v)); if (!isFinite(v)) v = lo; return Math.max(lo, Math.min(hi, v)); }
   function cleanTags(t) {
-    var seen = {}, out = [];
+    var seen = Object.create(null), out = [];
     (Array.isArray(t) ? t : String(t || '').split(',')).forEach(function (x) {
       x = String(x).trim().toLowerCase().slice(0, 24);
       if (x && !seen[x] && out.length < 8) { seen[x] = 1; out.push(x); }
@@ -70,7 +70,7 @@
   }
 
   /* ---------- views over the chain ---------- */
-  function voidedIds(entries) { var v = {}; entries.forEach(function (e) { if (e.type === 'void') v[e.ref] = e; }); return v; }
+  function voidedIds(entries) { var v = Object.create(null); entries.forEach(function (e) { if (e.type === 'void') v[e.ref] = e; }); return v; }
   function events(entries) { var v = voidedIds(entries); return entries.filter(function (e) { return e.type === 'event' && !v[e.id]; }); }
   function addenda(entries, id) { return entries.filter(function (e) { return e.type === 'note' && e.ref === id; }); }
   function isLate(e) { var p = parseAt(e.at); return !!p && e.rec - p.ts > LATE_HOURS * 36e5; }
@@ -243,7 +243,7 @@
 
   /* ---------- tags, readiness, letter, calendar ---------- */
   function tagCounts(evs, limit) {
-    var m = {}; evs.forEach(function (e) { (e.tags || []).forEach(function (x) { m[x] = (m[x] || 0) + 1; }); });
+    var m = Object.create(null); evs.forEach(function (e) { (e.tags || []).forEach(function (x) { m[x] = (m[x] || 0) + 1; }); });
     return Object.keys(m).map(function (k) { return { tag: k, n: m[k] }; }).sort(function (a, b) { return b.n - a.n || (a.tag < b.tag ? -1 : 1); }).slice(0, limit || 6);
   }
   function readiness(c, nowTs) {
