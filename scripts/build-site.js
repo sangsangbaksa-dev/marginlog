@@ -2,7 +2,7 @@
 const fs = require('fs'), path = require('path');
 const root = path.join(__dirname, '..'), S = JSON.parse(fs.readFileSync(path.join(__dirname, 'landing-strings.json'), 'utf8'));
 const CFG = require('../app/config.js');
-const SITE = 'https://marginlog.pages.dev', names = { en: 'English', ko: '한국어', ja: '日本語', zh: '中文', es: 'Español' };
+const SITE = CFG.siteUrl.replace(/\/+$/, ''), names = { en: 'English', ko: '한국어', ja: '日本語', zh: '中文', es: 'Español' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 /* Original line icons (24x24, stroke only), one per feature card. */
 const ICONS = ['M12 3l7 3v5c0 5-3 8-7 10-4-2-7-5-7-10V6z', 'M12 7v5l3 2M12 3a9 9 0 100 18 9 9 0 000-18z', 'M4 19V9M10 19V5M16 19v-7M21 19H3', 'M5 4h14v16H5zM9 9h6M9 13h6M9 17h3', 'M4 20l4-12 4 8 3-5 5 9', 'M7 3h10l3 3v15H4V3zM8 12h8M8 16h5', 'M4 6h16v14H4zM4 10h16M8 3v4M16 3v4', 'M3 12l5 5L21 6', 'M4 4h16v12H8l-4 4z'];
