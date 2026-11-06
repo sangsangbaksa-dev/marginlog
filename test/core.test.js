@@ -249,3 +249,15 @@ test('date filters are inclusive, search addenda and export only results with co
  assert.equal(C.filterEvents(c,{from:'2026-11-03',to:'2026-11-01'}).length,0);
  assert.equal(JSON.stringify(c),snapshot);
 });
+
+
+test('event search matches equivalent Korean and accent forms without modifying the sealed chain', async () => {
+ const c=await mk([{at:'2026-11-01T10:00',text:'서울 café',witness:'홍길동'}]);
+ const original=JSON.stringify(c);
+ assert.equal(C.filterEvents(c,{q:'서울'.normalize('NFD')}).length,1);
+ assert.equal(C.filterEvents(c,{q:'café'.normalize('NFD')}).length,1);
+ assert.equal(C.filterEvents(c,{q:'홍길동'.normalize('NFD')}).length,1);
+ assert.equal(C.filterEvents(c,{q:'cafe'}).length,0);
+ assert.equal(JSON.stringify(c),original);
+ assert.equal((await C.verifyChain(c.entries)).ok,true);
+});
