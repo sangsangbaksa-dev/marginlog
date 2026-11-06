@@ -118,3 +118,11 @@ textarea.letter{font:.9rem/1.5 ui-monospace,Menlo,Consolas,monospace;margin-top:
 .dlg{box-shadow:0 24px 70px #0006;padding:22px}
 @media(hover:hover){.kind:hover{border-color:var(--acc);background:var(--soft)}button.pri:not(:disabled):hover{filter:brightness(1.1)}.tab:not(.on):hover{color:var(--acc)}}
 @media(max-width:420px){.top{align-items:flex-start}.topbtns{width:100%}.empty:not(.small){padding:30px 2px 20px}.hero{padding:16px}.entry{padding:14px}.kind{padding-left:14px}}
+
+/* Date range and export actions belong to the log view, never the stored chain. */
+.filters .date-filter{display:flex;flex-direction:column;gap:5px;font-size:.82rem;min-width:140px;margin:0}
+.filters .date-filter input{width:100%;min-height:44px}
+.filter-actions{padding:12px 0;margin:0 0 12px;border-bottom:1px solid var(--line)}
+.filter-actions .cap{flex:1 1 220px;line-height:1.5}
+@media(max-width:600px){.filters .date-filter{flex:1 1 130px;min-width:0}.filter-actions button{flex:1 1 auto}}
+@media print{.filter-actions{display:none}}

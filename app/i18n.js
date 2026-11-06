@@ -581,6 +581,11 @@
     ovSearch: 'Buscar casos', tlOpen: 'Abrir entrada',viewWord: 'Vista',viewList: 'Lista', viewTimeline: 'Cronología', photosBtn: 'Fotos ({n})', galleryH: 'Fotos de este caso', galleryHelp: 'Todas las fotos adjuntas a las entradas, de la más reciente a la más antigua. Toca una para verla a tamaño completo.', dlTxt: 'Descargar cronología (.txt)',
     remindH: 'Plazos', remindOver: 'Vencido: {step} en {case} (vencía el {date})', remindToday: 'Vence hoy: {step} en {case}', remindTomorrow: 'Vence mañana: {step} en {case}', remindSoon: 'Vence en {d} días: {step} en {case} ({date})', remindMore: 'Hay {n} plazos más en otros casos. Abre el resumen para verlos todos.'
   };
+  Object.assign(L.en, {"dateFrom": "From date", "dateTo": "Through date", "exportFiltered": "Export results (.csv)", "filteredHint": "Filtered extract; keep a full backup separately.", "dateOrder": "The start date must be on or before the end date."});
+  Object.assign(L.ko, {"dateFrom": "시작 날짜", "dateTo": "종료 날짜", "exportFiltered": "검색 결과 내보내기 (.csv)", "filteredHint": "필터된 기록입니다. 전체 백업은 별도로 보관하세요.", "dateOrder": "시작 날짜는 종료 날짜보다 늦을 수 없습니다."});
+  Object.assign(L.ja, {"dateFrom": "開始日", "dateTo": "終了日", "exportFiltered": "検索結果を出力 (.csv)", "filteredHint": "絞り込んだ記録です。完全なバックアップは別に保管してください。", "dateOrder": "開始日は終了日以前にしてください。"});
+  Object.assign(L.zh, {"dateFrom": "开始日期", "dateTo": "结束日期", "exportFiltered": "导出筛选结果 (.csv)", "filteredHint": "此文件仅含筛选记录，请另行保存完整备份。", "dateOrder": "开始日期不能晚于结束日期。"});
+  Object.assign(L.es, {"dateFrom": "Desde", "dateTo": "Hasta", "exportFiltered": "Exportar resultados (.csv)", "filteredHint": "Extracto filtrado; conserva una copia completa por separado.", "dateOrder": "La fecha inicial no puede ser posterior a la final."});
   var STEPS = {
     en: { talk: 'Talk', written: 'Written notice', complaint: 'Formal complaint', mediation: 'Mediation', authority: 'Authority', legal: 'Legal action' },
     ko: { talk: '대화', written: '서면 통보', complaint: '공식 민원', mediation: '조정', authority: '관계 기관', legal: '법적 대응' },
