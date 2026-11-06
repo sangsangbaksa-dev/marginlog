@@ -98,3 +98,23 @@ textarea.letter{font:.9rem/1.5 ui-monospace,Menlo,Consolas,monospace;margin-top:
 .gal .thumb{width:100%;padding:0;min-height:0;border:0;background:none}
 .gal .thumb img{width:100%;height:auto;aspect-ratio:1/1;object-fit:cover;border-radius:8px;border:1px solid var(--line);background:var(--soft)}
 .galview{margin:8px 0 12px}.galview .big-ph{margin:0 auto 8px}.galview[hidden]{display:none}
+
+
+/* A quiet reading surface for a sensitive record, with clear next actions. */
+.wrap{padding-bottom:calc(48px + env(safe-area-inset-bottom))}
+.top{padding:18px 0 16px;gap:12px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.top h1{font-size:1.4rem;letter-spacing:-.02em}.topbtns{gap:6px}
+.empty:not(.small){padding:38px 16px 24px}
+.empty:not(.small) h2{font:600 clamp(1.4rem,5vw,1.85rem)/1.2 Georgia,serif;letter-spacing:-.02em}
+.empty:not(.small) p{max-width:44ch;margin:12px auto 20px;line-height:1.6}
+.kinds{gap:10px;margin:22px auto;max-width:520px}
+.kind{position:relative;border-radius:14px;padding:16px 42px 16px 16px;box-shadow:0 2px 8px color-mix(in srgb,var(--ink) 5%,transparent)}
+.kind::after{content:"→";position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:1.25rem;color:var(--acc)}
+.kind b{font-size:1rem}.kind span{line-height:1.4;margin-top:2px}
+.hero,.entry,.ready,.remind{box-shadow:0 3px 12px color-mix(in srgb,var(--ink) 5%,transparent)}
+.hero{padding:20px;border-radius:18px}.entry{padding:16px;border-radius:16px}
+.mini div{padding:10px 12px}.mini dd{font-variant-numeric:tabular-nums}
+.tabs{gap:8px;scrollbar-width:thin}.tab{padding:12px 10px}
+.dlg{box-shadow:0 24px 70px #0006;padding:22px}
+@media(hover:hover){.kind:hover{border-color:var(--acc);background:var(--soft)}button.pri:not(:disabled):hover{filter:brightness(1.1)}.tab:not(.on):hover{color:var(--acc)}}
+@media(max-width:420px){.top{align-items:flex-start}.topbtns{width:100%}.empty:not(.small){padding:30px 2px 20px}.hero{padding:16px}.entry{padding:14px}.kind{padding-left:14px}}
