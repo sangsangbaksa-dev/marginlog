@@ -126,3 +126,12 @@ textarea.letter{font:.9rem/1.5 ui-monospace,Menlo,Consolas,monospace;margin-top:
 .filter-actions .cap{flex:1 1 220px;line-height:1.5}
 @media(max-width:600px){.filters .date-filter{flex:1 1 130px;min-width:0}.filter-actions button{flex:1 1 auto}}
 @media print{.filter-actions{display:none}}
+
+/* A single, quiet workspace for date filters and their result actions. */
+@media screen{
+ .filters{gap:12px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+ .filters>*,.filters input,.filters select{min-width:0}
+ .filter-actions{gap:8px;padding:12px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card)}
+ .filter-actions button{white-space:normal;text-wrap:balance;line-height:1.4}
+ .err:not([hidden]):not(:empty){padding:10px 12px;border:1px solid color-mix(in srgb,var(--warn) 45%,var(--line));border-radius:10px;line-height:1.5}
+}

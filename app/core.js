@@ -173,7 +173,7 @@
   }
   /* Filtering is a view. The complete chain remains intact for notes and void reasons. */
   function filterEvents(c, f) {
-    f = f || {}; var vd = voidedIds(c.entries), q = String(f.q || '').trim().toLowerCase();
+    f = f || {}; var vd = voidedIds(c.entries), q = String(f.q || '').normalize('NFC').trim().toLowerCase();
     return c.entries.filter(function (e) {
       if (e.type !== 'event' || (!f.voided && vd[e.id])) return false;
       var day = e.at.slice(0, 10);
@@ -181,7 +181,7 @@
       if (f.sev && e.sev < f.sev) return false;
       if (f.tag && e.tags.indexOf(f.tag) < 0) return false;
       var text = e.text + ' ' + e.witness + ' ' + e.tags.join(' ') + ' ' + addenda(c.entries, e.id).map(function (n) { return n.text; }).join(' ');
-      return !q || text.toLowerCase().indexOf(q) >= 0;
+      return !q || text.normalize('NFC').toLowerCase().indexOf(q) >= 0;
     });
   }
   function toCsv(c, filters) {
