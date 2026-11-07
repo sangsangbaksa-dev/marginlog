@@ -361,6 +361,10 @@
     if (p.ts > now() + 5 * 6e4) return err(t('errFuture'));
     if (text.length < 3) { $('#e-text', form).focus(); return err(t('errText')); }
     var dur = $('#e-dur', form).value; if (dur !== '' && !(+dur >= 0 && +dur <= 14400)) return err(t('errDur'));
+    // Warn once when a similar entry exists within an hour; a second save with the same text and time keeps both.
+    var dupKey = at + '|' + text, dups = C.possibleDuplicates(c.entries, { at: at, text: text }, 60);
+    if (dups.length && pending.dupAck !== dupKey) { pending.dupAck = dupKey; return err(t('dupWarn', { at: dups[0].at.replace('T', ' ') })); }
+    pending.dupAck = null;
     var sev = +(form.querySelector('input[name=sev]:checked') || { value: 2 }).value, photos = [];
     try {
       for (var i = 0; i < pending.photos.length; i++) { var data = pending.photos[i], h = await C.sha256Hex(data), id = C.uid(); await photoPut(id, data); photos.push({ id: id, h: h }); }

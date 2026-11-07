@@ -236,3 +236,22 @@ test('plain-text chronology keeps order and text, and states the seal result', a
   assert.ok(txt.includes('Seal intact. Sealed records: 2'));
   assert.ok(C.chronologyText(c, L, NOW, { ok: false }).includes(I.L.en.chainBad));
 });
+
+test('possibleDuplicates: same text within the window, voided and unrelated entries ignored', () => {
+  const ev = (id, at, text, extra = {}) => Object.assign({ id, type: 'event', at, text, rec: 0, hash: id }, extra);
+  const entries = [
+    ev('a', '2026-11-02T22:10', 'Drilling again'),
+    ev('b', '2026-11-02T20:00', 'Drilling again'),
+    ev('c', '2026-11-02T22:15', 'Totally different'),
+    ev('d', '2026-11-02T22:12', '  drilling   AGAIN  ', {}),
+  ];
+  const hit = C.possibleDuplicates(entries, { at: '2026-11-02T22:20', text: 'Drilling again' }, 60).map((e) => e.id);
+  assert.deepEqual(hit, ['a', 'd']);
+  // Voided entries are not counted.
+  const voided = entries.concat([{ id: 'v', type: 'void', ref: 'a', at: '2026-11-02T23:00', rec: 0, text: 'typo', hash: 'v' }]);
+  assert.deepEqual(C.possibleDuplicates(voided, { at: '2026-11-02T22:20', text: 'Drilling again' }, 60).map((e) => e.id), ['d']);
+  // Bad input never throws and never warns.
+  assert.deepEqual(C.possibleDuplicates(entries, { at: 'nope', text: 'Drilling again' }), []);
+  assert.deepEqual(C.possibleDuplicates(entries, { at: '2026-11-02T22:20', text: 'ab' }), []);
+  assert.deepEqual(C.possibleDuplicates(undefined, null), []);
+});

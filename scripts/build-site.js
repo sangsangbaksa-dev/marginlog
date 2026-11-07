@@ -23,7 +23,7 @@ for (const lang of Object.keys(S)) {
 <body><header class="bar"><a class="brand" href="./"><img src="${pre}icon.svg" alt="" width="30" height="30">Marginlog</a><nav aria-label="${esc(s.nav)}">${nav}</nav><a class="hcta" href="${buy || pre + 'app/'}"${buy ? ' rel="noopener"' : ''}>${esc(s.cta)}</a></header>
 <main>
 <section class="hero"><div class="hero-t"><p class="eyebrow">${esc(s.eyebrow)}</p><h1>${esc(s.h1)}</h1><p class="lead">${esc(s.lead)}</p>${cta}</div>
-<figure class="mock" aria-label="${esc(s.demoH)}"><div class="mock-h"><b>${esc(s.demoH)}</b><span class="ok">✓ ${esc(s.demoSeal)}</span></div>
+<figure class="mock" aria-label="${esc(s.demoH)}"><div class="mock-h"><b>${esc(s.demoH)}</b><span class="ok"><i aria-hidden="true"></i>${esc(s.demoSeal)}</span></div>
 <ol class="mock-l">${s.demo.map((x, i) => `<li><span>${esc(x)}</span><code>#${hashes[i]}</code></li>`).join('')}</ol><figcaption>${esc(s.demoCap)}</figcaption></figure></section>
 <section><h2>${esc(s.usesH)}</h2><ul class="uses">${s.uses.map(u => `<li><h3>${esc(u[0])}</h3><p>${esc(u[1])}</p></li>`).join('')}</ul></section>
 <section><h2>${esc(s.how)}</h2><ol class="how">${s.steps.map(x => `<li>${esc(x)}</li>`).join('')}</ol></section>

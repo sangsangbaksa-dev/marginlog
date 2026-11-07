@@ -391,13 +391,26 @@
     return out.join('\n') + '\n';
   }
 
+  /* Entries that look like a candidate {at, text}: the same text (case and spacing ignored, or one contains the other)
+     recorded within `minutes` of its time. Voided entries are never returned. Used as a save-anyway warning, never to block. */
+  function possibleDuplicates(entries, cand, minutes) {
+    var p = parseAt(cand && cand.at), norm = function (x) { return String(x || '').toLowerCase().replace(/\s+/g, ' ').trim(); };
+    var text = norm(cand && cand.text), win = (minutes > 0 ? minutes : 60) * 6e4;
+    if (!p || text.length < 3) return [];
+    return events(entries || []).filter(function (e) {
+      var q = parseAt(e.at), other = norm(e.text);
+      if (!q || other.length < 3) return false;
+      return Math.abs(q.ts - p.ts) <= win && (other === text || other.indexOf(text) >= 0 || text.indexOf(other) >= 0);
+    });
+  }
+
   var api = {
     KINDS: KINDS, STEP_KINDS: STEP_KINDS, LATE_HOURS: LATE_HOURS,
     uid: uid, pad: pad, toLocalStamp: toLocalStamp, parseAt: parseAt, dayNum: dayNum, sha256Hex: sha256Hex, seal: seal, verifyChain: verifyChain, cleanTags: cleanTags, clampInt: clampInt,
     events: events, addenda: addenda, voidedIds: voidedIds, isLate: isLate, inQuiet: inQuiet, heatmap: heatmap, weekly: weekly, topBand: topBand, stats: stats,
     strength: strength, caseStrength: caseStrength, ladder: ladder, suggestNext: suggestNext, toCsv: toCsv, reportMarkdown: reportMarkdown, sanitizeCase: sanitizeCase,
     tagCounts: tagCounts, readiness: readiness, addDays: addDays, noticeLetter: noticeLetter, toIcs: toIcs, encryptText: encryptText, decryptText: decryptText, overview: overview, calendarAll: calendarAll, digest: digest,
-    photoIndex: photoIndex, monthGroups: monthGroups, dueItems: dueItems, chronologyText: chronologyText
+    photoIndex: photoIndex, monthGroups: monthGroups, dueItems: dueItems, chronologyText: chronologyText, possibleDuplicates: possibleDuplicates
   };
   if (typeof module !== 'undefined' && module.exports) module.exports = api; else root.MLCore = api;
 })(typeof globalThis !== 'undefined' ? globalThis : this);

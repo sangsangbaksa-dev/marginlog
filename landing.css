@@ -48,3 +48,9 @@ footer.site-foot { max-width: 980px; margin: 0 auto; padding: 28px 18px 40px; bo
 .foot-brand .brand img { border-radius: 6px; }
 .foot-desc, .foot-disc, .foot-copy { margin: 0; }
 @media (prefers-reduced-motion: reduce) { .hcta, .grid li { transition: none; } .grid li:hover { transform: none; } }
+
+/* Refinement pass: one heading scale, a drawn seal mark instead of a text glyph, even section rhythm. */
+h1, h2 { text-wrap: balance; letter-spacing: -0.02em; }
+.lead { text-wrap: pretty; }
+.mock-h .ok { display: inline-flex; align-items: center; gap: 8px; }
+.mock-h .ok i { width: 10px; height: 10px; border-radius: 50%; background: var(--accent, #0B6E4F); box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #0B6E4F) 22%, transparent); flex: none; }
