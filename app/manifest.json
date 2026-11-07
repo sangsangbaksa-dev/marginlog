@@ -1,7 +1,7 @@
 {
  "name": "Marginlog",
  "short_name": "Marginlog",
- "description": "Sealed incident log for disputes",
+ "description": "Dated incident log kept in the browser",
  "start_url": "./",
  "scope": "./",
  "display": "standalone",

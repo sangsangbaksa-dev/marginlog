@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ja"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>プライバシーの説明 – Marginlog</title><meta name="description" content="Marginlog がこの端末に保存するもの、ライセンス確認が送るもの、まだ決めていない項目。"><meta name="theme-color" content="#0B6E4F">
+<link rel="canonical" href="https://marginlog.pages.dev/ja/privacy.html"><link rel="alternate" hreflang="en" href="https://marginlog.pages.dev/privacy.html"><link rel="alternate" hreflang="ko" href="https://marginlog.pages.dev/ko/privacy.html"><link rel="alternate" hreflang="ja" href="https://marginlog.pages.dev/ja/privacy.html"><link rel="alternate" hreflang="zh" href="https://marginlog.pages.dev/zh/privacy.html"><link rel="alternate" hreflang="es" href="https://marginlog.pages.dev/es/privacy.html">
+<link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="stylesheet" href="../landing.css"></head>
+<body><header class="bar"><a class="brand" href="../ja/"><img src="../icon.svg" alt="" width="30" height="30">Marginlog</a><nav aria-label="言語"><a href="../privacy.html" hreflang="en">English</a> <a href="../ko/privacy.html" hreflang="ko">한국어</a> <a href="../ja/privacy.html" aria-current="page" hreflang="ja">日本語</a> <a href="../zh/privacy.html" hreflang="zh">中文</a> <a href="../es/privacy.html" hreflang="es">Español</a></nav><a class="hcta" href="../app/">Marginlog を開く</a></header>
+<main class="legal"><p class="eyebrow"><a href="../ja/">ホーム</a></p><h1>プライバシーの説明</h1>
+<p>この説明は、このリポジトリの Marginlog のコードがデータをどう扱うかを述べます。名前のある組織が発行したプライバシーポリシーではありません。</p>
+<aside class="na" data-status="not-yet-available"><h2>まだ提供されていません</h2><ul><li>運営者の法的名称、郵便またはメールの連絡先</li><li>プライバシーに関する請求の連絡先</li><li>価格、チェックアウト、請求、返金のルール、ライセンスキーを使える端末数</li><li>ホストまたは Lemon Squeezy が接続やライセンスのデータをどこにどれだけ保管するか</li><li>あなた以外が持つデータを消す期限</li><li>保存する国や地域、準拠法</li></ul></aside>
+<p>これらの項目は意図して空です。このページは作りません。</p>
+<h2>案件と写真はこのブラウザに残ります</h2>
+<p>アカウントはありません。案件を保存しても案件の内容はアップロードされません。ブラウザに残るものは次のとおりです。</p>
+<ul><li>localStorage marginlog:v1 — 案件名、相手、望む結果、記録本文、入力した時刻、起きたと書いた時刻、深刻度、継続時間、タグ、目撃のメモ、追加メモ、無効の理由、対応の段階、アーカイブ、選んだ言語、開いている案件。</li><li>localStorage marginlog:v1:cp — 封印した記録の数と最後の指紋。記録の末尾が短くなったことに後から気づくためです。</li><li>localStorage marginlog:v1:lastbackup — バックアップを最後にダウンロードした時刻。</li><li>localStorage marginlog:v1:corrupt と marginlog:v1:corrupt-b — アプリが読めなかったデータの写し。残せた場合だけ。</li><li>IndexedDB データベース marginlog、ストア photos — 縮小した写真。</li><li>localStorage marginlog:license — 確認を通ったライセンスキーと、最後に確認した時刻。</li><li>localStorage marginlog:gate — 最後の状態が有料確認をオンと答えたか（1 または 0）。</li><li>localStorage marginlog-ai-key — Anthropic の API キー。保存した場合だけ。</li></ul>
+<p>ブラウザでこのサイトのデータを消すと、そのブラウザの写しは消えます。アプリは案件を削除でき（少しの間元に戻せます）、AI キーも消せます。このコードは案件のサーバー上の写しを持たないので、サーバーから消す対象がなく、削除の期限も書きません。</p>
+<h2>書き出したファイルには個人データが入り得ます</h2>
+<p>ダウンロードは、あなたが自分で送らない限り端末にあります。入力した内容が入っており、他の人の名前や情報が含まれることがあります。</p>
+<ul><li>バックアップ JSON（写真を含む）。パスフレーズを付けると AES-GCM で暗号化します。鍵は PBKDF2-SHA256、反復 310000 回で作ります。パスフレーズは保存しません。忘れたパスフレーズをこのアプリは復元できません。</li><li>報告書（コピー、印刷または PDF、Markdown）、時系列（.txt）、CSV、ダイジェスト（.md）、カレンダー（.ics）、書面通知の下書き。</li><li>印刷と PDF には写真が入り得ます。報告書と CSV には短い指紋が入ります。カレンダーには入力した案件名と段階名が入ります。</li></ul>
+<h2>ライセンス確認</h2>
+<p>アプリを開くと、この同じウェブサイトへ GET /api/license を送ります。本文はありません。応答 JSON の configured は true か false です。configured が true になるのは、サーバー環境に LEMONSQUEEZY_PRODUCT_ID があるときだけです。このリポジトリの関数はそのリクエストをデータベースに書きません。</p>
+<p>ロック解除を押したとき、およびキーが保存されているあいだ約 7 日ごと、アプリは POST /api/license で JSON {&quot;key&quot;:&quot;&lt;ライセンスキー&gt;&quot;} を送ります。</p>
+<p>有料確認がオフなら、関数は {configured:false} を返し、Lemon Squeezy には連絡しません。</p>
+<p>オンなら、関数はキーをフォーム項目 license_key として https://api.lemonsqueezy.com/v1/licenses/validate に送ります。Lemon Squeezy が valid と答え、状態が active または inactive で、商品 id が LEMONSQUEEZY_PRODUCT_ID と一致するときだけ受け入れます。ブラウザに伝えるのは {configured, valid} だけです。この関数は Lemon Squeezy の応答の残りを保存しません。ブラウザはその後キーを localStorage に保存します。</p>
+<p>サービスワーカーは /api をキャッシュしません。状態のリクエストもブラウザの HTTP キャッシュを使わないよう求めます（cache: no-store）。案件の本文、写真、名前、AI キーはライセンスのリクエストに含まれません。</p>
+<h2>支払い</h2>
+<p>このウェブサイトはチェックアウトを提供しません。アプリ設定のチェックアウト先は、まだ example.com を含む仮のアドレスで、そのため購入ボタンは隠れたままです。価格、返金、請求、有効化の回数はまだ提供されていません。テストのチェックアウトは販売ではなく、このサイトはそこへリンクしません。</p>
+<p>ライセンスのコードは、上に書いたとおり Lemon Squeezy のライセンス API を呼べます。それは店が開いていることや、価格が決まっていることを意味しません。</p>
+<h2>任意の AI</h2>
+<p>自分の API キーを保存し「AIで分析」を押すまで、Anthropic には何も送りません。リクエストは POST https://api.anthropic.com/v1/messages 、モデル claude-haiku-5-5 です。キーは x-api-key ヘッダーです。このブラウザにだけあり、/api/license には送りません。</p>
+<p>メッセージは一つの案件の件数と日付です。種類、合計、期間、継続時間、深刻度、欠けている詳細（文字数、継続時間、目撃者、写真、記録のタイミング、タグ）、準備の確認、段階のタイミング。案件名、記録本文、メモ、氏名、住所、電話番号、タグは含まれません。相手を入力していた場合、送る表示は 당사자 A です。応答は画面に出るだけで、このコードはディスクに書きません。推定であり、法的な評価ではありません。</p>
+<h2>ホスティングと他の当事者</h2>
+<p>サイトは Cloudflare Pages で https://marginlog.pages.dev に公開されます。開くと、そのホストへ通常のブラウザリクエストが行き、ページのアドレス、IP アドレス、ユーザーエージェントが含まれ得ます。このリポジトリは解析スクリプトを加えず、独自のクッキーを置きません。ホストが接続記録をどれだけ保管するかは書きません。</p>
+<p>このコードが連絡し得る相手:</p>
+<ul><li>Cloudflare — ページと /api/license のホスト。</li><li>Lemon Squeezy（api.lemonsqueezy.com）— 上のライセンス確認だけ。有料確認がオンのときだけ。</li><li>Anthropic（api.anthropic.com）— 任意の AI リクエストだけ。</li></ul>
+<p>このサイトはフォントファイル、解析スクリプト、支払いのフレームを読み込みません。書体は端末に既にあるものです。サービスワーカーは同一オリジンの成功した GET 応答だけを保存し、/api 以下は除外します。他のウェブサイトの応答は保存しません。</p>
+<p class="foot-legal"><a href="../ja/terms.html">利用の説明</a></p>
+</main>
+<footer class="site-foot"><div class="foot-brand"><a class="brand" href="../ja/"><img src="../icon.svg" alt="" width="26" height="26">Marginlog</a><p class="foot-legal"><a href="../ja/privacy.html">プライバシーの説明</a> · <a href="../ja/terms.html">利用の説明</a></p></div><p class="foot-disc">個人の記録であり法的助言ではありません。指紋が一致しても、文章、時刻、または記録を書き換えられないことは証明しません。時刻は端末の時計です。記録の詳細スコアと段階の提案は法的な評価ではありません。お住まいの法律が認める範囲だけを記録してください。</p><p class="foot-copy">© 2026 Marginlog</p></footer></body></html>

@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="zh"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>隐私说明 – Marginlog</title><meta name="description" content="Marginlog 存在本设备上的内容、许可证检查会发送的内容，以及尚未写明的事项。"><meta name="theme-color" content="#0B6E4F">
+<link rel="canonical" href="https://marginlog.pages.dev/zh/privacy.html"><link rel="alternate" hreflang="en" href="https://marginlog.pages.dev/privacy.html"><link rel="alternate" hreflang="ko" href="https://marginlog.pages.dev/ko/privacy.html"><link rel="alternate" hreflang="ja" href="https://marginlog.pages.dev/ja/privacy.html"><link rel="alternate" hreflang="zh" href="https://marginlog.pages.dev/zh/privacy.html"><link rel="alternate" hreflang="es" href="https://marginlog.pages.dev/es/privacy.html">
+<link rel="icon" href="../../icon.svg" type="image/svg+xml"><link rel="stylesheet" href="../../landing.css"></head>
+<body><header class="bar"><a class="brand" href="../../zh/"><img src="../../icon.svg" alt="" width="30" height="30">Marginlog</a><nav aria-label="语言"><a href="../../privacy.html" hreflang="en">English</a> <a href="../../ko/privacy.html" hreflang="ko">한국어</a> <a href="../../ja/privacy.html" hreflang="ja">日本語</a> <a href="../../zh/privacy.html" aria-current="page" hreflang="zh">中文</a> <a href="../../es/privacy.html" hreflang="es">Español</a></nav><a class="hcta" href="../../app/">打开 Marginlog</a></header>
+<main class="legal"><p class="eyebrow"><a href="../../zh/">首页</a></p><h1>隐私说明</h1>
+<p>本说明描述本仓库中 Marginlog 代码如何处理数据。它不是某个具名机构发布的隐私政策。</p>
+<aside class="na" data-status="not-yet-available"><h2>尚未提供</h2><ul><li>运营者的法定名称，以及邮寄或电子邮件联系方式</li><li>隐私请求的联系方式</li><li>价格、结账、账单、退款规则，以及一个许可证密钥可以启用的设备数量</li><li>托管方或 Lemon Squeezy 把连接或许可证数据存在哪里、存多久</li><li>删除由你以外的人持有的数据的期限</li><li>存储所在国家或地区，以及适用法律</li></ul></aside>
+<p>这些项目是有意留空的。本页不编造它们。</p>
+<h2>事项和照片留在这个浏览器里</h2>
+<p>没有账号。保存事项不会上传事项内容。浏览器里保留的是：</p>
+<ul><li>localStorage marginlog:v1 — 事项名称、对方、期望结果、记录正文、你输入的时间、你所写的发生时间、严重度、持续时间、标签、证人备注、附加备注、作废原因、应对步骤、是否归档、所选语言和当前事项。</li><li>localStorage marginlog:v1:cp — 已封存记录的条数和最后指纹，用来事后发现记录末尾被截短。</li><li>localStorage marginlog:v1:lastbackup — 上次下载备份文件的时间。</li><li>localStorage marginlog:v1:corrupt 和 marginlog:v1:corrupt-b — 应用无法读取的数据副本，仅在能够留下副本时。</li><li>IndexedDB 数据库 marginlog，存储 photos — 缩小后的照片。</li><li>localStorage marginlog:license — 通过检查的许可证密钥，以及上次检查的时间。</li><li>localStorage marginlog:gate — 上次状态是否表示已开启付费检查（1 或 0）。</li><li>localStorage marginlog-ai-key — Anthropic API 密钥，仅在你保存之后。</li></ul>
+<p>在浏览器中清除本网站数据，会删除该浏览器中的这些副本。应用可以删除事项（可短时间撤销），也可以移除 AI 密钥。这段代码不在服务器上保存事项副本，因此没有可在服务器上删除的副本，也不写删除期限。</p>
+<h2>导出的文件可能含有个人数据</h2>
+<p>下载的文件留在你的设备上，除非你自己再发送出去。其中是你输入的内容，可能包括他人的姓名和信息。</p>
+<ul><li>备份 JSON，含照片。若设置口令，文件用 AES-GCM 加密。密钥由 PBKDF2-SHA256、310000 次迭代导出。口令不会被保存。本应用无法恢复遗忘的口令。</li><li>报告（复制、打印或 PDF、Markdown）、时间顺序记录（.txt）、CSV、摘要（.md）、日历（.ics）和书面通知草稿。</li><li>打印和 PDF 可以包含照片。报告和 CSV 包含短指纹。日历文件包含你输入的事项名称和步骤名称。</li></ul>
+<h2>许可证检查</h2>
+<p>打开应用时，它向本网站发送 GET /api/license。没有请求体。响应 JSON 的 configured 为 true 或 false。只有服务器环境设置了 LEMONSQUEEZY_PRODUCT_ID 时，configured 才为 true。本仓库中的函数不把该请求写入数据库。</p>
+<p>当你按下解锁，以及在保存了密钥之后大约每 7 天，应用会 POST /api/license，JSON 为 {&quot;key&quot;:&quot;&lt;许可证密钥&gt;&quot;}。</p>
+<p>若未开启付费检查，函数返回 {configured:false}，并且不联系 Lemon Squeezy。</p>
+<p>若已开启，函数把密钥作为表单字段 license_key 发送到 https://api.lemonsqueezy.com/v1/licenses/validate。仅当 Lemon Squeezy 报告 valid、状态为 active 或 inactive，且产品 id 与 LEMONSQUEEZY_PRODUCT_ID 一致时才接受。浏览器只被告知 {configured, valid}。该函数不保存 Lemon Squeezy 回复的其余部分。浏览器随后把密钥存入 localStorage。</p>
+<p>Service worker 不缓存 /api。状态请求也要求浏览器不要使用 HTTP 缓存（cache: no-store）。事项正文、照片、姓名和 AI 密钥不属于许可证请求。</p>
+<h2>付款</h2>
+<p>本网站不提供结账。应用配置中的结账地址仍是含有 example.com 的占位地址，因此购买按钮保持隐藏。价格、退款、账单和激活次数尚未提供。测试结账不是销售，本网站也不链接到测试结账。</p>
+<p>许可证代码可以按上文调用 Lemon Squeezy 的许可证 API。这并不表示商店已经开放，也不表示已经确定价格。</p>
+<h2>可选的 AI</h2>
+<p>除非你保存自己的 API 密钥并按下“用AI分析”，否则不会向 Anthropic 发送任何内容。请求为 POST https://api.anthropic.com/v1/messages，模型 claude-haiku-5-5。密钥放在 x-api-key 头中。它只留在此浏览器，不会发给 /api/license。</p>
+<p>消息是一个事项的次数和日期：类型、合计、时间跨度、持续时间、严重度、缺少哪些细节（文字长度、持续时间、证人、照片、记录时间、标签）、准备检查和步骤时间。不包括事项名称、记录正文、备注、姓名、地址、电话号码或标签。若填写了对方，发送的称呼是 당사자 A。回复只显示在屏幕上，这段代码不把它写入磁盘。它是估计，不是法律评估。</p>
+<h2>托管与其他方</h2>
+<p>网站通过 Cloudflare Pages 发布在 https://marginlog.pages.dev。打开它会向该主机发送普通的浏览器请求，其中可以包括页面地址、IP 地址和用户代理。本仓库不加入分析脚本，也不设置自己的 cookie。它不说明主机把连接日志保留多久。</p>
+<p>这段代码可能联系的各方：</p>
+<ul><li>Cloudflare，作为页面和 /api/license 的主机。</li><li>Lemon Squeezy（api.lemonsqueezy.com），仅用于上文的许可证校验，且仅在开启付费检查时。</li><li>Anthropic（api.anthropic.com），仅用于可选的 AI 请求。</li></ul>
+<p>本网站不加载字体文件、分析脚本或付款框架。字体是你设备上已有的字体。Service worker 只保存同源且成功的 GET 响应，/api 之下除外，以便离线打开应用。它不保存其他网站的响应。</p>
+<p class="foot-legal"><a href="../../zh/terms.html">使用说明</a></p>
+</main>
+<footer class="site-foot"><div class="foot-brand"><a class="brand" href="../../zh/"><img src="../../icon.svg" alt="" width="26" height="26">Marginlog</a><p class="foot-legal"><a href="../../zh/privacy.html">隐私说明</a> · <a href="../../zh/terms.html">使用说明</a></p></div><p class="foot-disc">这是个人记录，不是法律意见。指纹相符并不证明文字、时间，或记录无法被改写。时间来自你的设备时钟。完整度分数和升级提示不是法律评估。只记录你所在地法律允许记录的内容。</p><p class="foot-copy">© 2026 Marginlog</p></footer></body></html>

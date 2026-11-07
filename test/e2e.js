@@ -147,7 +147,24 @@ const ago = (days, h = 22, m = 30) => { const d = new Date(); d.setDate(d.getDat
   await pg.selectOption('#casesel', { label: 'Second (archived)' }).catch(() => {}); 
   // landing pages render
   for (const l of ['', 'ko/', 'ja/', 'zh/', 'es/']) { const r = await pg.goto(base + '/' + l); assert.equal(r.status(), 200); assert.ok(await pg.locator('h1').count() === 1 && await pg.locator('a.cta').count() >= 1, l); }
+  for (const pth of ['/privacy.html', '/terms.html', '/privacy/', '/terms/', '/ko/privacy.html', '/ja/terms.html', '/zh/privacy.html', '/es/terms.html']) {
+    const r = await pg.goto(base + pth); assert.equal(r.status(), 200, pth); assert.equal(await pg.locator('[data-status=not-yet-available]').count(), 1, pth);
+    assert.equal(await pg.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1), true, '390 ' + pth);
+  }
   await pg.goto(base + '/'); await pg.screenshot({ path: out + '/08-landing.png', fullPage: true });
+  const wide = await b.newContext({ viewport: { width: 1440, height: 900 }, locale: 'en-US' });
+  const w = await wide.newPage(); w.on('pageerror', e => errs.push(e.message));
+  for (const pth of ['/', '/app/', '/privacy.html', '/terms.html']) {
+    const r = await w.goto(base + pth); assert.equal(r.status(), 200, '1440 ' + pth);
+    await w.waitForSelector('h1, .empty, .legal');
+    assert.equal(await w.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1), true, '1440 overflow ' + pth);
+  }
+  await w.screenshot({ path: out + '/11-landing-1440.png', fullPage: true });
+  await w.setViewportSize({ width: 390, height: 844 });
+  await w.goto(base + '/');
+  assert.equal(await w.evaluate(() => document.documentElement.scrollWidth <= document.documentElement.clientWidth + 1), true, '390 landing');
+  await w.screenshot({ path: out + '/12-landing-390.png', fullPage: false });
+  await wide.close();
   assert.deepEqual(errs, [], 'console/page errors: ' + JSON.stringify(errs));
   await b.close(); srv.close(); console.log('e2e ok');
 })().catch(e => { console.error(e); process.exit(1); });

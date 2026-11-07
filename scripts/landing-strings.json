@@ -1,15 +1,15 @@
 {
   "en": {
-    "title": "Marginlog – a sealed incident log for disputes",
-    "desc": "Log noise, landlord, workplace or contractor problems in seconds. Entries are sealed so they cannot be quietly rewritten. See the pattern, escalate step by step, hand over a clean report. One payment, private, works offline.",
-    "h1": "Keep a dated log that shows it was not rewritten.",
-    "lead": "Marginlog records each incident with a timestamp, seals it into a tamper-evident chain, spots the pattern, and builds the report you give a landlord, HR, mediator or officer. One-time purchase, offline, no account.",
+    "title": "Marginlog – a dated incident log on your device",
+    "desc": "Log noise, landlord, workplace or contractor problems in seconds. Each entry keeps a fingerprint of the one before it. See the pattern, follow a suggested next step, and copy a report. The log stays in this browser. Purchase is not yet available.",
+    "h1": "Keep a dated log on your own device.",
+    "lead": "Marginlog records each incident with the time from your device, stores a fingerprint of each entry with the one before it, shows patterns, and builds a report you can copy or print. A matching fingerprint is not proof of what happened or when, and the app is not legal advice. No account.",
     "cta": "Open Marginlog",
     "feat": "What is inside",
     "f": [
       [
-        "Sealed entries",
-        "Each entry is fingerprinted with the one before it. Edit history and the report shows the chain broke."
+        "Fingerprinted entries",
+        "Each entry stores a fingerprint that includes the previous one. If stored data no longer matches, the report says so. That does not prove the words are true, and someone who calculates new fingerprints can still rewrite the log."
       ],
       [
         "Happening-now timer",
@@ -20,12 +20,12 @@
         "Weekday-by-hour heat map, 8-week trend, quiet-hour breaches, longest calm stretch."
       ],
       [
-        "Evidence strength",
-        "Each entry gets a score and tells you what to add: duration, witness, photo, timeliness."
+        "Record detail",
+        "Each entry gets a score for blank fields: length, duration, witness, photo, timing and a tag. It is a reminder, not a judgment of evidence."
       ],
       [
-        "Escalation ladder",
-        "Talk, written notice, complaint, mediation, legal. Answer deadlines warn you when ignored."
+        "Escalation prompts",
+        "Talk, written notice, complaint, mediation, or a further step. These are suggestions from rules in the app, not a legal assessment. Dates you set can be marked overdue."
       ],
       [
         "Report in one tap",
@@ -51,17 +51,17 @@
       "Hand over the report when you need it."
     ],
     "priv": "Private by design",
-    "privb": "Everything is stored in your browser on this device. No account, no tracking, no upload. Download a backup file whenever you like.",
-    "disc": "A personal record, not legal advice. The seal shows the log was not rewritten; it is not a notarised timestamp, and times come from your device clock. Record only what you may lawfully record where you live, and keep other people's personal details to what the dispute needs.",
+    "privb": "Cases and photos are stored in this browser. There is no account. A license check can send a license key to this site, and an optional AI request can send counts and dates. The privacy note lists each one. You can download a backup file.",
+    "disc": "A personal record, not legal advice. A matching fingerprint does not prove the words, the time or that the log cannot be rewritten. Times come from your device clock. The detail score and the escalation prompts are not a legal assessment. Record only what you may lawfully record where you live.",
     "nav": "Languages",
-    "eyebrow": "One-time purchase · Private · Works offline",
+    "eyebrow": "On this device · Works offline · Purchase not yet available",
     "demoH": "Flat 3B – upstairs noise",
     "demo": [
       "Sat 23:40 · Bass music, 40 min · severity 4",
       "Fri 02:10 · Stomping, woke the kids · severity 3",
       "Wed 22:15 · Party, door slammed · severity 3"
     ],
-    "demoSeal": "Seal intact · 14 records",
+    "demoSeal": "Sample only · 14 rows",
     "demoCap": "A sample case. Yours stays on your device.",
     "usesH": "Made for the problems that drag on",
     "uses": [
@@ -86,41 +86,41 @@
     "faq": [
       [
         "Will this hold up as evidence?",
-        "It can help you remember accurately and show a clear, consistent record. Whether any record is accepted depends on the country and the body deciding. It is not legal advice."
+        "It is a personal log that can help you remember what you wrote down. Whether anyone accepts it is up to them. Marginlog does not say that it will. It is not legal advice."
       ],
       [
-        "What does sealing prove?",
-        "That the entries were not quietly changed or removed after they were written. It is not a notarised timestamp, so it cannot prove when an entry was made."
+        "What does the fingerprint show?",
+        "If stored entries are changed and the fingerprints are not recalculated, the report says the chain does not match. It does not prove the content, the time, or that someone cannot rewrite the log and calculate new fingerprints. It is not a notarised timestamp."
       ],
       [
         "Where is my data?",
-        "Only in this browser on this device. There is no account and nothing is uploaded. Clearing site data erases it, so download a backup now and then."
+        "Cases and photos stay in this browser. A license key can be sent to this site’s license check and, when that check is on, to Lemon Squeezy. Optional AI sends counts and dates only if you press the button. The privacy note has the list. Clearing site data deletes the local copy."
       ],
       [
         "What does it cost?",
-        "One payment, no subscription. Lemon Squeezy processes the payment and sends your license key."
+        "Not yet available. This website does not show a price, a checkout or a refund rule. Buy buttons stay hidden while the checkout address is a placeholder."
       ]
     ],
     "tryH": "Start your log today",
     "tryB": "It takes less than a minute to open a case.",
-    "payH": "One payment. No subscription.",
-    "payB": "Unlock everything: sealed entries, the pattern finder, the escalation ladder, reports, backup and restore. Your records stay on this device.",
+    "payH": "Purchase is not yet available",
+    "payB": "This website does not offer a checkout, a price or a refund rule. Buy buttons stay hidden while the checkout address is a placeholder. Case records are still stored in this browser.",
     "buyCta": "Buy Marginlog",
     "haveKey": "I already have a license key",
-    "fnote": "Everything stays in this browser. No account, no upload.",
+    "fnote": "Cases and photos stay in this browser. No account.",
     "fcopy": "© 2026 Marginlog"
   },
   "ko": {
-    "title": "Marginlog – 분쟁을 위한 봉인형 사건 기록",
-    "desc": "소음, 집주인, 직장, 업체 문제를 몇 초 만에 기록하세요. 기록은 봉인되어 몰래 고칠 수 없습니다. 패턴을 보고, 단계별로 대응하고, 깔끔한 보고서를 내세요. 1회 결제, 비공개, 오프라인.",
-    "h1": "고쳐 쓰지 않았음을 보여 주는 날짜별 기록.",
-    "lead": "Marginlog는 사건마다 시각을 기록하고 위·변조가 드러나는 사슬로 봉인하며, 패턴을 찾고, 집주인·인사팀·조정위원·담당자에게 낼 보고서를 만듭니다. 1회 구매, 오프라인, 계정 없음.",
+    "title": "Marginlog – 기기에 남기는 날짜별 사건 기록",
+    "desc": "소음, 집주인, 직장, 업체 문제를 몇 초 만에 기록하세요. 각 기록은 직전 기록의 지문을 함께 저장합니다. 패턴을 보고, 제안된 다음 단계를 보고, 보고서를 복사하세요. 기록은 이 브라우저에 남습니다. 구매는 아직 제공되지 않습니다.",
+    "h1": "내 기기에 남기는 날짜별 기록.",
+    "lead": "Marginlog는 사건마다 이 기기의 시각을 적고, 각 기록과 직전 기록의 지문을 저장하고, 패턴을 보여 주고, 복사하거나 인쇄할 보고서를 만듭니다. 지문이 맞다는 것은 무슨 일이 있었는지나 언제인지를 증명하지 않으며, 법률 자문이 아닙니다. 계정은 없습니다.",
     "cta": "Marginlog 열기",
     "feat": "들어 있는 기능",
     "f": [
       [
-        "봉인된 기록",
-        "각 기록은 직전 기록과 함께 지문이 찍힙니다. 과거를 고치면 보고서에 사슬이 깨졌다고 표시됩니다."
+        "지문이 있는 기록",
+        "각 기록은 직전 지문을 포함한 지문을 저장합니다. 저장된 데이터가 지문과 맞지 않으면 보고서에 표시됩니다. 글이 사실임을 증명하지 않고, 지문을 다시 계산하면 기록을 고쳐 쓸 수 있습니다."
       ],
       [
         "지금 일어나는 중 타이머",
@@ -131,12 +131,12 @@
         "요일×시간 히트맵, 8주 추세, 정숙 시간 위반, 가장 길게 조용했던 기간."
       ],
       [
-        "증거 강도",
-        "기록마다 점수와 보완할 점(지속 시간, 목격자, 사진, 즉시성)을 알려 줍니다."
+        "기록 상세",
+        "각 기록은 빈칸에 대한 점수를 받습니다. 글 길이, 지속 시간, 목격자, 사진, 기록 시점, 태그입니다. 빈칸을 알려 주는 표시이며 증거에 대한 판단이 아닙니다."
       ],
       [
-        "단계별 대응",
-        "대화, 서면 통보, 민원, 조정, 법적 대응. 답변 기한이 지나면 알려 줍니다."
+        "단계 제안",
+        "대화, 서면 통보, 민원, 조정, 또는 그다음 단계. 앱 규칙이 내는 제안이며 법률 판단이 아닙니다. 정한 날짜는 지났다고 표시될 수 있습니다."
       ],
       [
         "한 번에 보고서",
@@ -162,17 +162,17 @@
       "필요할 때 보고서를 내밉니다."
     ],
     "priv": "처음부터 비공개",
-    "privb": "모든 데이터는 이 기기의 브라우저에만 저장됩니다. 계정, 추적, 업로드가 없고 백업 파일은 언제든 내려받을 수 있습니다.",
-    "disc": "개인 기록이며 법률 자문이 아닙니다. 봉인은 기록이 고쳐지지 않았음을 보여 줄 뿐 공증된 시각 증명은 아니며, 시각은 기기 시계를 따릅니다. 사는 곳의 법이 허용하는 것만 기록하고(예: 남의 대화 몰래 녹음 금지), 다른 사람의 개인정보는 분쟁에 필요한 만큼만 적으세요.",
+    "privb": "사건과 사진은 이 브라우저에 저장됩니다. 계정은 없습니다. 라이선스 확인은 라이선스 키를 이 사이트로 보낼 수 있고, 선택적 AI는 건수와 날짜를 보낼 수 있습니다. 개인정보 안내에 각각 적혀 있습니다. 백업 파일은 내려받을 수 있습니다.",
+    "disc": "개인 기록이며 법률 자문이 아닙니다. 지문이 맞아도 글, 시각, 또는 기록을 고쳐 쓸 수 없음을 증명하지 않습니다. 시각은 기기 시계를 따릅니다. 기록 상세 점수와 단계 제안은 법률 판단이 아닙니다. 사는 곳의 법이 허용하는 것만 기록하세요.",
     "nav": "언어",
-    "eyebrow": "1회 구매 · 비공개 · 오프라인 사용",
+    "eyebrow": "이 기기에서 · 오프라인 · 구매는 아직 없음",
     "demoH": "3B호 – 윗집 소음",
     "demo": [
       "토 23:40 · 쿵쿵거리는 음악, 40분 · 심각도 4",
       "금 02:10 · 발소리, 아이들이 깸 · 심각도 3",
       "수 22:15 · 파티, 문 쾅 닫힘 · 심각도 3"
     ],
-    "demoSeal": "봉인 정상 · 기록 14건",
+    "demoSeal": "예시 · 14행",
     "demoCap": "예시 사건입니다. 실제 기록은 내 기기에만 남습니다.",
     "usesH": "오래 끄는 문제를 위해 만들었습니다",
     "uses": [
@@ -197,41 +197,41 @@
     "faq": [
       [
         "증거로 인정되나요?",
-        "정확하게 기억하고 일관된 기록을 보여 주는 데 도움이 됩니다. 인정 여부는 나라와 판단하는 기관에 따라 다릅니다. 법률 자문이 아닙니다."
+        "적어 둔 내용을 기억하는 데 도움이 되는 개인 기록입니다. 받아 줄지는 받는 쪽이 정합니다. Marginlog는 인정된다고 말하지 않습니다. 법률 자문이 아닙니다."
       ],
       [
-        "봉인은 무엇을 증명하나요?",
-        "기록이 작성된 뒤 몰래 바뀌거나 삭제되지 않았다는 점입니다. 공증된 시각 증명이 아니므로 언제 작성됐는지는 증명하지 못합니다."
+        "지문은 무엇을 보여 주나요?",
+        "저장된 기록을 고치고 지문을 다시 계산하지 않으면, 보고서가 사슬이 맞지 않는다고 표시합니다. 내용이나 시각을 증명하지 않고, 지문을 다시 계산해 고쳐 쓰는 것도 막지 못합니다. 공증된 시각 증명이 아닙니다."
       ],
       [
         "데이터는 어디에 있나요?",
-        "이 기기의 이 브라우저에만 있습니다. 계정도 업로드도 없습니다. 사이트 데이터를 지우면 사라지니 가끔 백업 파일을 내려받으세요."
+        "사건과 사진은 이 브라우저에 있습니다. 라이선스 키는 이 사이트의 라이선스 확인으로 보내질 수 있고, 그 확인이 켜져 있으면 Lemon Squeezy로 전달됩니다. 선택적 AI는 버튼을 눌렀을 때만 건수와 날짜를 보냅니다. 목록은 개인정보 안내에 있습니다. 사이트 데이터를 지우면 이 기기의 사본이 삭제됩니다."
       ],
       [
         "비용은 얼마인가요?",
-        "1회 결제이며 구독은 없습니다. 결제와 라이선스 키 발급은 Lemon Squeezy가 처리합니다."
+        "아직 제공되지 않습니다. 이 웹사이트는 가격, 결제 페이지, 환불 규칙을 보여 주지 않습니다. 결제 주소가 자리표시자인 동안 구매 버튼은 숨겨져 있습니다."
       ]
     ],
     "tryH": "오늘부터 기록을 시작하세요",
     "tryB": "사건 하나 만드는 데 1분이 걸리지 않습니다.",
-    "payH": "1회 결제, 구독 없음",
-    "payB": "봉인 기록, 패턴 분석, 대응 단계, 보고서, 백업과 복원까지 모든 기능을 씁니다. 기록은 이 기기에만 남습니다.",
+    "payH": "구매는 아직 제공되지 않습니다",
+    "payB": "이 웹사이트는 결제 페이지, 가격, 환불 규칙을 제공하지 않습니다. 결제 주소가 자리표시자인 동안 구매 버튼은 숨겨져 있습니다. 사건 기록은 여전히 이 브라우저에 저장됩니다.",
     "buyCta": "Marginlog 구매하기",
     "haveKey": "이미 라이선스 키가 있어요",
-    "fnote": "모든 기록은 이 브라우저에만 저장됩니다. 계정도, 업로드도 없습니다.",
+    "fnote": "사건과 사진은 이 브라우저에 남습니다. 계정은 없습니다.",
     "fcopy": "© 2026 Marginlog"
   },
   "ja": {
-    "title": "Marginlog – トラブルのための封印つき出来事ログ",
-    "desc": "騒音、大家、職場、業者の問題を数秒で記録。記録は封印され、こっそり書き換えられません。パターンを確認し、段階的に対応し、整った報告書を提出。買い切り、非公開、オフライン対応。",
-    "h1": "書き換えていないことを示せる、日付入りの記録。",
-    "lead": "Marginlog は出来事ごとに時刻を記録し、改ざんが分かる鎖で封印し、パターンを見つけ、大家・人事・調停人・担当者に渡す報告書を作ります。買い切り、オフライン、アカウント不要。",
+    "title": "Marginlog – 端末に残す日付入りの出来事ログ",
+    "desc": "騒音、大家、職場、業者の問題を数秒で記録。各記録は直前の記録の指紋を一緒に保存します。パターンと次の提案を見て、報告書をコピー。記録はこのブラウザに残ります。購入はまだ提供されません。",
+    "h1": "自分の端末に残す、日付入りの記録。",
+    "lead": "Marginlog は出来事ごとにこの端末の時刻を書き、各記録と直前の記録の指紋を保存し、パターンを示し、コピーや印刷ができる報告書を作ります。指紋が一致しても、何がいつ起きたかの証明ではなく、法的助言でもありません。アカウントはありません。",
     "cta": "Marginlog を開く",
     "feat": "主な機能",
     "f": [
       [
-        "封印された記録",
-        "各記録は直前の記録と一緒に指紋が取られます。過去を書き換えると、報告書に鎖が壊れたと表示されます。"
+        "指紋つきの記録",
+        "各記録は直前の指紋を含む指紋を保存します。保存データが指紋と合わなければ報告書に出ます。文章が真実である証明ではなく、指紋を計算し直せば記録は書き換えられます。"
       ],
       [
         "「今まさに」タイマー",
@@ -242,12 +242,12 @@
         "曜日×時間のヒートマップ、8週間の推移、静かな時間帯の違反、最長の平穏期間。"
       ],
       [
-        "証拠の強さ",
-        "記録ごとにスコアと補強点（継続時間、目撃者、写真、即時性）を表示。"
+        "記録の詳細",
+        "各記録は空欄への点数を受けます。文字数、継続時間、目撃者、写真、記録のタイミング、タグです。空欄の知らせであり、証拠の判断ではありません。"
       ],
       [
-        "段階的エスカレーション",
-        "話し合い、書面通知、苦情、調停、法的措置。回答期限が過ぎると知らせます。"
+        "段階の提案",
+        "話し合い、書面通知、苦情、調停、またはその次の段階。アプリの規則による提案であり、法的な評価ではありません。設定した日付は期限切れと表示され得ます。"
       ],
       [
         "ワンタップで報告書",
@@ -273,17 +273,17 @@
       "必要なときに報告書を渡します。"
     ],
     "priv": "最初から非公開",
-    "privb": "データはすべてこの端末のブラウザ内に保存。アカウント・追跡・アップロードなし。バックアップはいつでもダウンロードできます。",
-    "disc": "個人の記録であり法的助言ではありません。封印は記録が書き換えられていないことを示すもので、公証された時刻証明ではなく、時刻は端末の時計に基づきます。お住まいの地域の法律で認められる範囲だけを記録し、他人の個人情報は紛争に必要な分にとどめてください。",
+    "privb": "案件と写真はこのブラウザに保存されます。アカウントはありません。ライセンス確認はライセンスキーをこのサイトへ送ることがあり、任意の AI は件数と日付を送ることがあります。それぞれプライバシーの説明にあります。バックアップはダウンロードできます。",
+    "disc": "個人の記録であり法的助言ではありません。指紋が一致しても、文章、時刻、または記録を書き換えられないことは証明しません。時刻は端末の時計です。記録の詳細スコアと段階の提案は法的な評価ではありません。お住まいの法律が認める範囲だけを記録してください。",
     "nav": "言語",
-    "eyebrow": "買い切り · 非公開 · オフライン対応",
+    "eyebrow": "この端末で · オフライン · 購入はまだありません",
     "demoH": "3B号室 – 上階の騒音",
     "demo": [
       "土 23:40 · 低音の音楽、40分 · 深刻度4",
       "金 02:10 · 足音、子どもが起きた · 深刻度3",
       "水 22:15 · パーティー、ドアを強く閉める · 深刻度3"
     ],
-    "demoSeal": "封印は正常 · 記録14件",
+    "demoSeal": "見本 · 14行",
     "demoCap": "サンプルの案件です。実際の記録は端末の中だけに残ります。",
     "usesH": "長引く問題のために",
     "uses": [
@@ -307,42 +307,42 @@
     "faqH": "正直な回答",
     "faq": [
       [
-        "証拠として通用しますか？",
-        "正確に思い出し、一貫した記録を示す助けになります。認められるかは国や判断する機関によります。法的助言ではありません。"
+        "証拠として認められますか？",
+        "書き留めたことを思い出すための個人の記録です。受け入れるかは受け取る側が決めます。Marginlog は認められるとは言いません。法的助言ではありません。"
       ],
       [
-        "封印は何を証明しますか？",
-        "書かれた後に記録がこっそり変更・削除されていないことです。公証された時刻証明ではないので、いつ書いたかは証明できません。"
+        "指紋は何を示しますか？",
+        "保存した記録を変え、指紋を計算し直さないと、報告書は鎖が一致しないと示します。内容や時刻の証明ではなく、指紋を計算し直して書き換えることも止めません。公証された時刻証明ではありません。"
       ],
       [
         "データはどこにありますか？",
-        "この端末のこのブラウザの中だけです。アカウントもアップロードもありません。サイトデータを消すと失われるので、時々バックアップを。"
+        "案件と写真はこのブラウザにあります。ライセンスキーはこのサイトのライセンス確認へ送られることがあり、その確認がオンなら Lemon Squeezy に渡されます。任意の AI はボタンを押したときだけ件数と日付を送ります。一覧はプライバシーの説明にあります。サイトデータを消すと、この端末の写しが消えます。"
       ],
       [
         "料金は？",
-        "買い切りで、サブスクリプションはありません。決済とライセンスキーの発行は Lemon Squeezy が行います。"
+        "まだ提供されていません。このウェブサイトは価格、チェックアウト、返金のルールを示しません。チェックアウト先が仮のアドレスのあいだ、購入ボタンは隠れています。"
       ]
     ],
     "tryH": "今日から記録を始めよう",
     "tryB": "案件を作るのは1分もかかりません。",
-    "payH": "買い切り、サブスクリプションなし",
-    "payB": "封印記録、パターン分析、対応の段階、報告書、バックアップと復元まで全機能が使えます。記録はこの端末にだけ残ります。",
+    "payH": "購入はまだ提供されていません",
+    "payB": "このウェブサイトはチェックアウト、価格、返金のルールを提供しません。チェックアウト先が仮のアドレスのあいだ、購入ボタンは隠れています。案件の記録は引き続きこのブラウザに保存されます。",
     "buyCta": "Marginlog を購入",
     "haveKey": "ライセンスキーを持っています",
-    "fnote": "すべての記録はこのブラウザにのみ保存されます。アカウントもアップロードもありません。",
+    "fnote": "案件と写真はこのブラウザに残ります。アカウントはありません。",
     "fcopy": "© 2026 Marginlog"
   },
   "zh": {
-    "title": "Marginlog – 为纠纷准备的封存式事件记录",
-    "desc": "几秒钟记下噪音、房东、职场或承包商的问题。记录被封存，无法被悄悄改写。查看规律，逐级应对，交出整洁的报告。一次付费、私密、可离线。",
-    "h1": "一份能显示没有被改写过的按日期记录。",
-    "lead": "Marginlog 为每次事件记下时间，用可发现篡改的链条封存，找出规律，并生成可交给房东、人事、调解员或主管部门的报告。一次性购买、离线、无需账号。",
+    "title": "Marginlog – 留在本设备上的按日期事件记录",
+    "desc": "几秒钟记下噪音、房东、职场或承包商的问题。每条记录都保存与前一条一起计算的指纹。查看规律、查看建议的下一步，并复制报告。记录留在此浏览器中。购买尚未提供。",
+    "h1": "把按日期的记录留在你自己的设备上。",
+    "lead": "Marginlog 用本设备的时间记下每次事件，保存每条记录与前一条的指纹，显示规律，并生成可复制或打印的报告。指纹相符并不证明发生了什么或发生在何时，也不是法律意见。没有账号。",
     "cta": "打开 Marginlog",
     "feat": "功能一览",
     "f": [
       [
-        "封存的记录",
-        "每条记录都与前一条一起生成指纹。改写历史，报告会显示链条已断。"
+        "带指纹的记录",
+        "每条记录保存一个包含前一条指纹的指纹。若已存数据不再匹配，报告会说明。这不证明文字为真；重新计算指纹的人仍然可以改写记录。"
       ],
       [
         "“正在发生”计时",
@@ -353,12 +353,12 @@
         "星期×小时热力图、8周趋势、安静时段违规、最长平静期。"
       ],
       [
-        "证据强度",
-        "每条记录都有评分，并提示还可补充：时长、证人、照片、及时性。"
+        "记录完整度",
+        "每条记录按空白项计分：文字长度、持续时间、证人、照片、记录时间和标签。它是提醒，不是对证据的判断。"
       ],
       [
-        "升级阶梯",
-        "沟通、书面通知、投诉、调解、法律途径。回复期限过了会提醒你。"
+        "升级提示",
+        "沟通、书面通知、投诉、调解，或更进一步。这些是应用规则给出的建议，不是法律评估。你设定的日期可以被标为已逾期。"
       ],
       [
         "一键报告",
@@ -384,17 +384,17 @@
       "需要时交出报告。"
     ],
     "priv": "天生私密",
-    "privb": "所有数据只保存在本设备的浏览器里。无账号、无追踪、不上传，随时可下载备份文件。",
-    "disc": "这是个人记录，不构成法律意见。封存只说明记录没有被改写，并非经公证的时间戳，时间取自你的设备时钟。只记录当地法律允许记录的内容，他人的个人信息只写纠纷所需的部分。",
+    "privb": "事项和照片保存在此浏览器中。没有账号。许可证检查可以把许可证密钥发到本网站，可选的 AI 可以发送次数和日期。隐私说明逐项列出。你可以下载备份文件。",
+    "disc": "这是个人记录，不是法律意见。指纹相符并不证明文字、时间，或记录无法被改写。时间来自你的设备时钟。完整度分数和升级提示不是法律评估。只记录你所在地法律允许记录的内容。",
     "nav": "语言",
-    "eyebrow": "一次性购买 · 私密 · 可离线使用",
+    "eyebrow": "在本设备上 · 可离线 · 购买尚未提供",
     "demoH": "3B 室 – 楼上噪音",
     "demo": [
       "周六 23:40 · 低音音乐，40 分钟 · 严重度 4",
       "周五 02:10 · 跺脚声，孩子被吵醒 · 严重度 3",
       "周三 22:15 · 聚会，用力摔门 · 严重度 3"
     ],
-    "demoSeal": "封存完好 · 14 条记录",
+    "demoSeal": "示例 · 14 行",
     "demoCap": "示例事项。你的记录只保存在你的设备上。",
     "usesH": "为久拖不决的问题而做",
     "uses": [
@@ -419,41 +419,41 @@
     "faq": [
       [
         "能当作证据吗？",
-        "它能帮你准确回忆，并呈现清晰一致的记录。是否被采纳取决于所在国家和裁决机构。这不是法律意见。"
+        "它是一份个人记录，可以帮助你记住写下的内容。是否被接受由对方决定。Marginlog 不说它会被接受。这不是法律意见。"
       ],
       [
-        "封存能证明什么？",
-        "证明记录写下之后没有被悄悄修改或删除。它不是公证的时间戳，因此无法证明某条记录写于何时。"
+        "指纹说明什么？",
+        "如果已存记录被修改且没有重新计算指纹，报告会说明链条不匹配。它不证明内容或时间，也不能阻止有人改写记录并计算新指纹。它不是经公证的时间戳。"
       ],
       [
         "数据存放在哪里？",
-        "只在这台设备的这个浏览器里。没有账号，也不上传任何内容。清除网站数据会删除记录，请不时下载备份。"
+        "事项和照片留在此浏览器中。许可证密钥可以发到本网站的许可证检查；该检查开启时，会转给 Lemon Squeezy。可选的 AI 只在你按下按钮时发送次数和日期。清单在隐私说明里。清除网站数据会删除本地副本。"
       ],
       [
         "要花钱吗？",
-        "一次付费，没有订阅。付款与授权码由 Lemon Squeezy 处理。"
+        "尚未提供。本网站不显示价格、结账或退款规则。结账地址仍是占位地址时，购买按钮保持隐藏。"
       ]
     ],
     "tryH": "今天就开始记录",
     "tryB": "建立一个事项不到一分钟。",
-    "payH": "一次付费，无订阅",
-    "payB": "解锁全部功能：封存记录、规律分析、应对阶梯、报告、备份与恢复。记录只保存在这台设备上。",
+    "payH": "购买尚未提供",
+    "payB": "本网站不提供结账、价格或退款规则。结账地址仍是占位地址时，购买按钮保持隐藏。事项记录仍然保存在此浏览器中。",
     "buyCta": "购买 Marginlog",
     "haveKey": "我已有授权码",
-    "fnote": "所有记录仅保存在此浏览器中。无需账户，不上传。",
+    "fnote": "事项和照片留在此浏览器中。没有账号。",
     "fcopy": "© 2026 Marginlog"
   },
   "es": {
-    "title": "Marginlog – un registro sellado de incidentes para disputas",
-    "desc": "Anota en segundos problemas de ruido, casero, trabajo o contratistas. Las entradas se sellan y no se pueden reescribir a escondidas. Ve el patrón, escala paso a paso y entrega un informe limpio. Pago único, privado, sin conexión.",
-    "h1": "Un registro con fechas que muestra que no se reescribió.",
-    "lead": "Marginlog anota cada incidente con su hora, lo sella en una cadena a prueba de manipulación, detecta el patrón y prepara el informe para casero, RR. HH., mediador o autoridad. Pago único, sin conexión, sin cuenta.",
+    "title": "Marginlog – un registro de incidentes con fecha en tu dispositivo",
+    "desc": "Anota en segundos problemas de ruido, casero, trabajo o contratistas. Cada entrada guarda una huella de la anterior. Ve el patrón, mira el siguiente paso sugerido y copia un informe. El registro se queda en este navegador. La compra aún no está disponible.",
+    "h1": "Guarda un registro con fechas en tu propio dispositivo.",
+    "lead": "Marginlog anota cada incidente con la hora de tu dispositivo, guarda una huella de cada entrada junto con la anterior, muestra patrones y prepara un informe para copiar o imprimir. Una huella que coincide no prueba qué ocurrió ni cuándo, y la app no es asesoramiento legal. Sin cuenta.",
     "cta": "Abrir Marginlog",
     "feat": "Qué incluye",
     "f": [
       [
-        "Entradas selladas",
-        "Cada entrada lleva la huella de la anterior. Si reescribes el pasado, el informe indica que la cadena se rompió."
+        "Entradas con huella",
+        "Cada entrada guarda una huella que incluye la anterior. Si los datos guardados ya no coinciden, el informe lo dice. Eso no prueba que las palabras sean ciertas, y quien calcule huellas nuevas puede reescribir el registro."
       ],
       [
         "Cronómetro «está pasando»",
@@ -464,12 +464,12 @@
         "Mapa de calor día×hora, tendencia de 8 semanas, infracciones en horas de silencio, mayor racha de calma."
       ],
       [
-        "Solidez de la prueba",
-        "Cada entrada recibe una puntuación y qué añadir: duración, testigo, foto, inmediatez."
+        "Detalle del registro",
+        "Cada entrada recibe una puntuación por campos vacíos: longitud, duración, testigo, foto, momento y una etiqueta. Es un aviso, no un juicio sobre la prueba."
       ],
       [
-        "Escalera de escalada",
-        "Charla, aviso escrito, queja, mediación, vía legal. Los plazos sin respuesta te avisan."
+        "Avisos de escalado",
+        "Charla, aviso por escrito, queja, mediación u otro paso. Son sugerencias de reglas de la app, no una valoración legal. Las fechas que pongas pueden marcarse como vencidas."
       ],
       [
         "Informe en un toque",
@@ -495,17 +495,17 @@
       "Entrega el informe cuando lo necesites."
     ],
     "priv": "Privado por diseño",
-    "privb": "Todo se guarda en el navegador de este dispositivo. Sin cuenta, sin rastreo, sin subidas. Descarga una copia cuando quieras.",
-    "disc": "Registro personal, no asesoría legal. El sello demuestra que el registro no se reescribió; no es un sello de tiempo notarial, y las horas vienen del reloj de tu dispositivo. Registra solo lo que la ley de tu lugar permita y limita los datos personales de otras personas a lo que la disputa necesite.",
+    "privb": "Los casos y las fotos se guardan en este navegador. No hay cuenta. La comprobación de licencia puede enviar una clave a este sitio, y una petición opcional de IA puede enviar recuentos y fechas. La nota de privacidad los enumera. Puedes descargar un archivo de copia.",
+    "disc": "Registro personal, no asesoría legal. Una huella que coincide no prueba las palabras, la hora ni que el registro no pueda reescribirse. Las horas vienen del reloj de tu dispositivo. La puntuación de detalle y los avisos de escalado no son una valoración legal. Registra solo lo que la ley de tu lugar permita.",
     "nav": "Idiomas",
-    "eyebrow": "Pago único · Privado · Funciona sin conexión",
+    "eyebrow": "En este dispositivo · Sin conexión · Compra aún no disponible",
     "demoH": "Piso 3B – ruido de arriba",
     "demo": [
       "Sáb 23:40 · Música con graves, 40 min · gravedad 4",
       "Vie 02:10 · Pisadas, despertó a los niños · gravedad 3",
       "Mié 22:15 · Fiesta, portazo · gravedad 3"
     ],
-    "demoSeal": "Sello intacto · 14 registros",
+    "demoSeal": "Muestra · 14 filas",
     "demoCap": "Un caso de ejemplo. El tuyo se queda en tu dispositivo.",
     "usesH": "Hecho para los problemas que se alargan",
     "uses": [
@@ -530,28 +530,28 @@
     "faq": [
       [
         "¿Servirá como prueba?",
-        "Puede ayudarte a recordar con precisión y a mostrar un registro claro y coherente. Que se acepte depende del país y de quien decida. No es asesoramiento legal."
+        "Es un registro personal que puede ayudarte a recordar lo que escribiste. Que alguien lo acepte depende de esa persona. Marginlog no dice que lo vaya a hacer. No es asesoramiento legal."
       ],
       [
-        "¿Qué demuestra el sello?",
-        "Que las entradas no se cambiaron ni se borraron en silencio después de escribirlas. No es una marca de tiempo notarial, así que no prueba cuándo se hizo una entrada."
+        "¿Qué muestra la huella?",
+        "Si las entradas guardadas cambian y las huellas no se recalculan, el informe dice que la cadena no coincide. No prueba el contenido, la hora, ni que alguien no pueda reescribir el registro y calcular huellas nuevas. No es un sello de tiempo notarial."
       ],
       [
         "¿Dónde están mis datos?",
-        "Solo en este navegador de este dispositivo. No hay cuenta ni se sube nada. Borrar los datos del sitio los elimina: haz copias de vez en cuando."
+        "Los casos y las fotos se quedan en este navegador. Una clave de licencia puede enviarse a la comprobación de este sitio y, si esa comprobación está activa, a Lemon Squeezy. La IA opcional envía recuentos y fechas solo si pulsas el botón. La lista está en la nota de privacidad. Borrar los datos del sitio elimina la copia local."
       ],
       [
         "¿Cuánto cuesta?",
-        "Un pago único, sin suscripción. Lemon Squeezy procesa el pago y envía tu clave de licencia."
+        "Aún no disponible. Este sitio web no muestra un precio, un pago ni una regla de reembolso. Los botones de compra permanecen ocultos mientras la dirección de pago es un marcador."
       ]
     ],
     "tryH": "Empieza tu registro hoy",
     "tryB": "Abrir un caso lleva menos de un minuto.",
-    "payH": "Un pago. Sin suscripción.",
-    "payB": "Desbloquea todo: entradas selladas, buscador de patrones, escalado, informes, copia de seguridad y restauración. Tus registros se quedan en este dispositivo.",
+    "payH": "La compra aún no está disponible",
+    "payB": "Este sitio web no ofrece un pago, un precio ni una regla de reembolso. Los botones de compra permanecen ocultos mientras la dirección de pago es un marcador. Los registros del caso siguen guardados en este navegador.",
     "buyCta": "Comprar Marginlog",
     "haveKey": "Ya tengo una clave de licencia",
-    "fnote": "Todo se guarda en este navegador. Sin cuenta ni subidas.",
+    "fnote": "Los casos y las fotos se quedan en este navegador. Sin cuenta.",
     "fcopy": "© 2026 Marginlog"
   }
 }

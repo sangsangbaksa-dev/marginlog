@@ -99,7 +99,9 @@
     h += '<main id="main">';
     h += remindersBlock();
     h += c ? caseView(c) : emptyView();
-    h += '</main><footer class="site-foot"><div class="foot-brand"><a class="brand" href="./"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect class="m-bg" width="64" height="64" rx="14"/><rect class="m-bar" x="14" y="18" width="36" height="6" rx="3"/><rect class="m-bar" x="14" y="30" width="22" height="6" rx="3" opacity="0.55"/><rect class="m-bar" x="14" y="42" width="30" height="6" rx="3" opacity="0.85"/></svg><span>Marginlog</span></a><p class="foot-desc">' + esc(t('footNote')) + '</p><p class="foot-desc">' + esc(t('privacy')) + '</p></div><p class="foot-disc">' + esc(t('disclaimer')) + '</p><p class="foot-copy">' + esc(t('footCopy')) + '</p></footer>';
+    var legalLang = Object.prototype.hasOwnProperty.call(I.L, S.lang) ? S.lang : 'en';
+    var legalBase = legalLang === 'en' ? '../' : '../' + legalLang + '/';
+    h += '</main><footer class="site-foot"><div class="foot-brand"><a class="brand" href="./"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true" focusable="false"><rect class="m-bg" width="64" height="64" rx="14"/><rect class="m-bar" x="14" y="18" width="36" height="6" rx="3"/><rect class="m-bar" x="14" y="30" width="22" height="6" rx="3" opacity="0.55"/><rect class="m-bar" x="14" y="42" width="30" height="6" rx="3" opacity="0.85"/></svg><span>Marginlog</span></a><p class="foot-desc">' + esc(t('footNote')) + '</p><p class="foot-desc">' + esc(t('privacy')) + '</p><p class="foot-legal"><a href="' + legalBase + 'privacy.html">' + esc(t('privacyLink')) + '</a><a href="' + legalBase + 'terms.html">' + esc(t('termsLink')) + '</a></p></div><p class="foot-disc">' + esc(t('disclaimer')) + '</p><p class="foot-copy">' + esc(t('footCopy')) + '</p></footer>';
     root.innerHTML = h;
     hydratePhotos(); startLiveTick(); paintAi();
   }
@@ -136,9 +138,10 @@
   }
   function suggestion(c, sg) {
     var names = I.stepNames(S.lang);
-    if (sg.key === 'none') return '<p class="sugg">' + esc(t('sg_none')) + '</p>';
+    var note = '<p class="hint">' + esc(t('sgNote')) + '</p>';
+    if (sg.key === 'none') return '<p class="sugg">' + esc(t('sg_none')) + '</p>' + note;
     var sn = names[(sg.kind || (sg.step && sg.step.kind))] || '', msg = t('sg_' + sg.key, { step: (S.lang === 'en' || S.lang === 'es') && (I.L[S.lang]['sg_' + sg.key] || '').indexOf('{step}') !== 0 ? sn.toLowerCase() : sn, date: sg.step ? sg.step.due : '' });
-    return '<p class="sugg ' + (sg.key === 'overdue' ? 'warn' : '') + '"><b>' + esc(t('nextStep')) + '</b> ' + esc(msg) + (sg.kind ? ' <button type="button" class="link" data-act="addstep" data-kind="' + sg.kind + '">' + esc(t('logStep')) + '</button>' : '') + (sg.step ? ' <button type="button" class="link" data-act="stepdone" data-id="' + esc(sg.step.id) + '">' + esc(t('markAnswered')) + '</button>' : '') + '</p>';
+    return '<p class="sugg ' + (sg.key === 'overdue' ? 'warn' : '') + '"><b>' + esc(t('nextStep')) + '</b> ' + esc(msg) + (sg.kind ? ' <button type="button" class="link" data-act="addstep" data-kind="' + sg.kind + '">' + esc(t('logStep')) + '</button>' : '') + (sg.step ? ' <button type="button" class="link" data-act="stepdone" data-id="' + esc(sg.step.id) + '">' + esc(t('markAnswered')) + '</button>' : '') + '</p>' + note;
   }
 
   function matches(e, c) {
@@ -246,7 +249,7 @@
   }
   function stepsTab(c) {
     var names = I.stepNames(S.lang), done = {}; (c.steps || []).forEach(function (s) { done[s.kind] = 1; });
-    var h = '<h3>' + esc(t('ladderH')) + '</h3><ol class="ladder">' + C.ladder(c).map(function (k, i) { return '<li class="' + (done[k] ? 'dn' : '') + '"><span class="num">' + (done[k] ? '✓' : i + 1) + '</span><div><b>' + esc(names[k]) + '</b><span>' + esc(t('stepHint_' + k)) + '</span></div><button type="button" class="ghost" data-act="addstep" data-kind="' + k + '">' + esc(t('logStep')) + '</button></li>'; }).join('') + '</ol>';
+    var h = '<h3>' + esc(t('ladderH')) + '</h3><p class="hint">' + esc(t('ladderNote')) + '</p><ol class="ladder">' + C.ladder(c).map(function (k, i) { return '<li class="' + (done[k] ? 'dn' : '') + '"><span class="num">' + (done[k] ? '✓' : i + 1) + '</span><div><b>' + esc(names[k]) + '</b><span>' + esc(t('stepHint_' + k)) + '</span></div><button type="button" class="ghost" data-act="addstep" data-kind="' + k + '">' + esc(t('logStep')) + '</button></li>'; }).join('') + '</ol>';
     h += '<div class="btns wrap"><button type="button" class="sec" data-act="letter">' + esc(t('ltrBtn')) + '</button>' + ((c.steps || []).some(function (s) { return s.due && !s.done; }) ? '<button type="button" class="ghost" data-act="dlics">' + esc(t('icsBtn')) + '</button>' : '') + '</div>';
     h += aiPanel(c);
     h += '<h3>' + esc(t('stepsH')) + '</h3>';

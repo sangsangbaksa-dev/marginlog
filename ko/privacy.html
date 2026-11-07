@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>개인정보 안내 – Marginlog</title><meta name="description" content="Marginlog가 이 기기에 저장하는 것, 라이선스 확인이 보내는 것, 그리고 아직 정하지 않은 항목."><meta name="theme-color" content="#0B6E4F">
+<link rel="canonical" href="https://marginlog.pages.dev/ko/privacy.html"><link rel="alternate" hreflang="en" href="https://marginlog.pages.dev/privacy.html"><link rel="alternate" hreflang="ko" href="https://marginlog.pages.dev/ko/privacy.html"><link rel="alternate" hreflang="ja" href="https://marginlog.pages.dev/ja/privacy.html"><link rel="alternate" hreflang="zh" href="https://marginlog.pages.dev/zh/privacy.html"><link rel="alternate" hreflang="es" href="https://marginlog.pages.dev/es/privacy.html">
+<link rel="icon" href="../icon.svg" type="image/svg+xml"><link rel="stylesheet" href="../landing.css"></head>
+<body><header class="bar"><a class="brand" href="../ko/"><img src="../icon.svg" alt="" width="30" height="30">Marginlog</a><nav aria-label="언어"><a href="../privacy.html" hreflang="en">English</a> <a href="../ko/privacy.html" aria-current="page" hreflang="ko">한국어</a> <a href="../ja/privacy.html" hreflang="ja">日本語</a> <a href="../zh/privacy.html" hreflang="zh">中文</a> <a href="../es/privacy.html" hreflang="es">Español</a></nav><a class="hcta" href="../app/">Marginlog 열기</a></header>
+<main class="legal"><p class="eyebrow"><a href="../ko/">홈</a></p><h1>개인정보 안내</h1>
+<p>이 안내는 이 저장소의 Marginlog 코드가 데이터를 어떻게 다루는지 설명합니다. 특정 단체가 발행한 개인정보 처리방침이 아닙니다.</p>
+<aside class="na" data-status="not-yet-available"><h2>아직 제공되지 않음</h2><ul><li>운영자의 법적 이름, 우편 또는 이메일 연락처</li><li>개인정보 요청을 받을 연락처</li><li>가격, 결제 페이지, 청구, 환불 규칙, 라이선스 키를 쓸 수 있는 기기 수</li><li>호스트나 Lemon Squeezy가 접속 또는 라이선스 데이터를 어디에, 얼마나 보관하는지</li><li>당신 이외의 사람이 가진 데이터를 지우기까지의 기한</li><li>저장 국가나 지역, 준거법</li></ul></aside>
+<p>이 항목은 일부러 비워 두었습니다. 이 페이지는 지어내지 않습니다.</p>
+<h2>사건과 사진은 이 브라우저에 남습니다</h2>
+<p>계정은 없습니다. 사건을 저장해도 사건 내용이 업로드되지 않습니다. 브라우저에 남는 것은 다음과 같습니다.</p>
+<ul><li>localStorage marginlog:v1 — 사건 이름, 상대방, 원하는 결과, 기록 본문, 입력한 시각, 일어났다고 적은 시각, 심각도, 지속 시간, 태그, 목격자 메모, 추가 메모, 무효 사유, 대응 단계, 보관 여부, 선택한 언어, 열린 사건.</li><li>localStorage marginlog:v1:cp — 봉인된 기록 수와 마지막 지문. 기록이 뒤에서 잘렸는지 나중에 알아보기 위한 값입니다.</li><li>localStorage marginlog:v1:lastbackup — 백업 파일을 마지막으로 내려받은 시각.</li><li>localStorage marginlog:v1:corrupt 와 marginlog:v1:corrupt-b — 앱이 읽지 못한 데이터의 사본. 사본을 남길 수 있었을 때만.</li><li>IndexedDB 데이터베이스 marginlog, 스토어 photos — 크기를 줄인 사진.</li><li>localStorage marginlog:license — 확인을 통과한 라이선스 키와 마지막으로 확인한 시각.</li><li>localStorage marginlog:gate — 마지막 상태가 유료 확인을 켜 둔 상태였는지 (1 또는 0).</li><li>localStorage marginlog-ai-key — Anthropic API 키. 직접 저장한 경우에만.</li></ul>
+<p>브라우저에서 이 사이트의 데이터를 지우면 그 브라우저의 사본이 사라집니다. 앱에서 사건을 삭제할 수 있고(잠시 되돌리기), AI 키도 지울 수 있습니다. 이 코드는 사건의 서버 사본을 두지 않으므로 서버에서 지울 사본이 없고, 삭제 기한도 적지 않습니다.</p>
+<h2>내보낸 파일에는 개인정보가 들어갈 수 있습니다</h2>
+<p>내려받은 파일은 당신이 다시 보내지 않는 한 기기에 있습니다. 당신이 입력한 내용이 들어 있으며, 다른 사람의 이름과 정보가 포함될 수 있습니다.</p>
+<ul><li>백업 JSON, 사진 포함. 암호 문구를 넣으면 AES-GCM으로 암호화됩니다. 키는 PBKDF2-SHA256, 반복 310000회로 만듭니다. 암호 문구는 저장되지 않습니다. 이 앱은 잊은 암호 문구를 복구하지 못합니다.</li><li>보고서(복사, 인쇄 또는 PDF, Markdown), 시간순 기록(.txt), CSV, 요약(.md), 캘린더(.ics), 서면 통보 초안.</li><li>인쇄와 PDF에는 사진이 들어갈 수 있습니다. 보고서와 CSV에는 짧은 지문이 들어갑니다. 캘린더 파일에는 입력한 사건 이름과 단계 이름이 들어갑니다.</li></ul>
+<h2>라이선스 확인</h2>
+<p>앱을 열면 이 웹사이트로 GET /api/license 를 보냅니다. 본문은 없습니다. 응답 JSON의 configured 는 true 또는 false 입니다. configured 가 true 인 것은 서버 환경에 LEMONSQUEEZY_PRODUCT_ID 가 있을 때뿐입니다. 이 저장소의 함수는 그 요청을 데이터베이스에 쓰지 않습니다.</p>
+<p>잠금 해제를 누를 때, 그리고 키가 저장된 동안 약 7일마다, 앱은 POST /api/license 로 JSON {&quot;key&quot;:&quot;&lt;라이선스 키&gt;&quot;} 를 보냅니다.</p>
+<p>유료 확인이 꺼져 있으면 함수는 {configured:false} 를 돌려주고 Lemon Squeezy 에 연락하지 않습니다.</p>
+<p>켜져 있으면 함수는 키를 폼 필드 license_key 로 https://api.lemonsqueezy.com/v1/licenses/validate 에 보냅니다. Lemon Squeezy 가 valid 라고 하고, 상태가 active 또는 inactive 이며, 상품 id 가 LEMONSQUEEZY_PRODUCT_ID 와 같을 때만 받습니다. 브라우저에는 {configured, valid} 만 알려 줍니다. 이 함수는 Lemon Squeezy 응답의 나머지를 저장하지 않습니다. 브라우저는 그다음 키를 localStorage 에 저장합니다.</p>
+<p>서비스 워커는 /api 를 캐시에 넣지 않습니다. 상태 요청도 브라우저 HTTP 캐시를 쓰지 않도록 합니다(cache: no-store). 사건 본문, 사진, 이름, AI 키는 라이선스 요청에 포함되지 않습니다.</p>
+<h2>결제</h2>
+<p>이 웹사이트는 결제 페이지를 제공하지 않습니다. 앱 설정의 결제 주소는 아직 example.com 이 들어 있는 자리표시자이고, 그래서 구매 버튼이 숨겨져 있습니다. 가격, 환불, 청구, 활성화 횟수는 아직 제공되지 않습니다. 테스트 결제는 판매가 아니며, 이 사이트는 그쪽으로 연결하지 않습니다.</p>
+<p>라이선스 코드는 위에서 적은 대로 Lemon Squeezy 라이선스 API를 호출할 수 있습니다. 그것은 상점이 열려 있다거나 가격이 정해졌다는 말이 아닙니다.</p>
+<h2>선택적 AI</h2>
+<p>직접 발급한 API 키를 저장하고 “AI로 분석”을 누르기 전에는 Anthropic 으로 아무것도 보내지 않습니다. 요청은 POST https://api.anthropic.com/v1/messages , 모델 claude-haiku-5-5 입니다. 키는 x-api-key 헤더입니다. 이 브라우저에만 있고 /api/license 로는 보내지 않습니다.</p>
+<p>메시지에는 한 사건의 건수와 날짜가 들어갑니다. 유형, 합계, 기간, 지속 시간, 심각도, 비어 있는 상세 항목(글 길이, 지속 시간, 목격자, 사진, 기록 시점, 태그), 준비 점검, 단계 시점입니다. 사건 이름, 기록 본문, 메모, 이름, 주소, 전화번호, 태그는 들어가지 않습니다. 상대방을 적었다면 보내는 표시는 당사자 A 입니다. 응답은 화면에만 보이고 이 코드가 디스크에 쓰지 않습니다. 추정이며 법률 판단이 아닙니다.</p>
+<h2>호스팅과 다른 당사자</h2>
+<p>사이트는 Cloudflare Pages 로 https://marginlog.pages.dev 에 게시됩니다. 열면 그 호스트로 보통의 브라우저 요청이 가며, 페이지 주소, IP 주소, 사용자 에이전트가 포함될 수 있습니다. 이 저장소는 분석 스크립트를 넣지 않고, 자체 쿠키를 설정하지 않습니다. 호스트가 접속 기록을 얼마나 보관하는지는 적지 않습니다.</p>
+<p>이 코드가 연락할 수 있는 곳:</p>
+<ul><li>Cloudflare — 페이지와 /api/license 의 호스트.</li><li>Lemon Squeezy (api.lemonsqueezy.com) — 위의 라이선스 확인만, 유료 확인이 켜져 있을 때만.</li><li>Anthropic (api.anthropic.com) — 선택적 AI 요청만.</li></ul>
+<p>이 사이트는 글꼴 파일, 분석 스크립트, 결제 프레임을 불러오지 않습니다. 글꼴은 기기에 이미 있는 것입니다. 서비스 워커는 같은 출처의 성공한 GET 응답만 저장하고 /api 아래는 제외합니다. 다른 웹사이트의 응답은 저장하지 않습니다.</p>
+<p class="foot-legal"><a href="../ko/terms.html">이용 안내</a></p>
+</main>
+<footer class="site-foot"><div class="foot-brand"><a class="brand" href="../ko/"><img src="../icon.svg" alt="" width="26" height="26">Marginlog</a><p class="foot-legal"><a href="../ko/privacy.html">개인정보 안내</a> · <a href="../ko/terms.html">이용 안내</a></p></div><p class="foot-disc">개인 기록이며 법률 자문이 아닙니다. 지문이 맞아도 글, 시각, 또는 기록을 고쳐 쓸 수 없음을 증명하지 않습니다. 시각은 기기 시계를 따릅니다. 기록 상세 점수와 단계 제안은 법률 판단이 아닙니다. 사는 곳의 법이 허용하는 것만 기록하세요.</p><p class="foot-copy">© 2026 Marginlog</p></footer></body></html>

@@ -29,7 +29,7 @@
   };
   var GAP_KO = {
     count: '기록이 아직 적습니다. 3건 이상이면 패턴을 보여 줄 수 있습니다.',
-    span: '기록 기간이 짧습니다. 1주 이상 이어진 기록이 설득력을 높입니다.',
+    span: '기록 기간이 짧습니다. 1주 이상이면 날짜의 범위가 넓어집니다.',
     parties: '사건 정보에 상대방과 원하는 결과를 적어 두세요.',
     written: '서면으로 통지한 기록이 없습니다.',
     late: '48시간이 지나 늦게 기록한 항목이 많습니다. 발생한 날 기록하세요.'
@@ -88,7 +88,7 @@
     else out.summary = '기록 ' + t.incidents + '건, 최근 30일 ' + t.last30 + '건(그 전 30일 ' + t.prev30 + '건). 최근 흐름: ' + TREND_KO[t.trend] + '.' + (t.avgSeverity ? ' 평균 심각도 ' + t.avgSeverity + '/5.' : '');
     Object.keys(TIP_KO).forEach(function (k) { if (f.evidence.missing[k]) out.gaps.push(TIP_KO[k] + ' 빠짐: ' + f.evidence.missing[k] + '건'); });
     f.readiness.unmet.forEach(function (k) {
-      if (k === 'strength') out.gaps.push('근거 강도가 낮습니다(평균 ' + f.evidence.avgStrength + '%). 기준은 60%입니다.');
+      if (k === 'strength') out.gaps.push('기록 상세도가 낮습니다(평균 ' + f.evidence.avgStrength + '%). 기준은 60%입니다. 법률상 증거의 판단이 아닙니다.');
       else if (GAP_KO[k]) out.gaps.push(GAP_KO[k]);
     });
     if (!out.gaps.length) out.gaps.push('눈에 띄게 빠진 증거는 없습니다. 기록을 계속 남기세요.');
