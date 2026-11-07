@@ -127,7 +127,7 @@
     return st;
   }
 
-  /* ---------- evidence strength ---------- */
+  /* ---------- record detail score (not a legal assessment) ---------- */
   function strength(e) {
     var s = 0, tips = [];
     if ((e.text || '').trim().length >= 40) s += 25; else tips.push('text');

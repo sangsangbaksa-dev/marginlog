@@ -2,6 +2,7 @@
 const fs = require('fs'), path = require('path');
 const root = path.join(__dirname, '..'), S = JSON.parse(fs.readFileSync(path.join(__dirname, 'landing-strings.json'), 'utf8'));
 const CFG = require('../app/config.js');
+const LEGAL = require('./legal-copy.js');
 const SITE = 'https://marginlog.pages.dev', names = { en: 'English', ko: '한국어', ja: '日本語', zh: '中文', es: 'Español' };
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 /* Original line icons (24x24, stroke only), one per feature card. */
@@ -32,10 +33,51 @@ for (const lang of Object.keys(S)) {
 <section class="pay"><h2>${esc(s.payH)}</h2><p>${esc(s.payB)}</p></section>
 <section><h2>${esc(s.faqH)}</h2><div class="faq">${s.faq.map(q => `<details><summary>${esc(q[0])}</summary><p>${esc(q[1])}</p></details>`).join('')}</div></section>
 <section class="final"><h2>${esc(s.tryH)}</h2><p>${esc(s.tryB)}</p>${cta}</section></main>
-<footer class="site-foot"><div class="foot-brand"><a class="brand" href="./"><img src="${pre}icon.svg" alt="" width="26" height="26">Marginlog</a><p class="foot-desc">${esc(s.fnote)}</p></div><p class="foot-disc">${esc(s.disc)}</p><p class="foot-copy">${esc(s.fcopy)}</p></footer></body></html>
+<footer class="site-foot"><div class="foot-brand"><a class="brand" href="./"><img src="${pre}icon.svg" alt="" width="26" height="26">Marginlog</a><p class="foot-desc">${esc(s.fnote)}</p><p class="foot-legal"><a href="${pre}privacy.html">${esc(LEGAL[lang].privacyLink)}</a> · <a href="${pre}terms.html">${esc(LEGAL[lang].termsLink)}</a></p></div><p class="foot-disc">${esc(s.disc)}</p><p class="foot-copy">${esc(s.fcopy)}</p></footer></body></html>
 `;
   fs.mkdirSync(dir, { recursive: true }); fs.writeFileSync(path.join(dir, 'index.html'), html);
 }
-fs.writeFileSync(path.join(root, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${Object.keys(S).map(l => `<url><loc>${SITE}/${l === 'en' ? '' : l + '/'}</loc></url>`).join('\n')}\n<url><loc>${SITE}/app/</loc></url>\n</urlset>\n`);
+function blocks(list) {
+  return list.map(b => {
+    if (b.t === 'h') return `<h2>${esc(b.v)}</h2>`;
+    if (b.t === 'ul') return `<ul>${b.v.map(x => `<li>${esc(x)}</li>`).join('')}</ul>`;
+    if (b.t === 'na') return `<aside class="na" data-status="not-yet-available"><h2>${esc(b.h)}</h2><ul>${b.v.map(x => `<li>${esc(x)}</li>`).join('')}</ul></aside>`;
+    return `<p>${esc(b.v)}</p>`;
+  }).join('\n');
+}
+function legalHref(fromLang, fromDepth, toLang, kind) {
+  const rootRel = '../'.repeat(fromDepth);
+  return rootRel + (toLang === 'en' ? '' : toLang + '/') + kind + '.html';
+}
+for (const lang of Object.keys(LEGAL)) {
+  const L = LEGAL[lang];
+  for (const kind of ['privacy', 'terms']) {
+    const spots = lang === 'en' ? [{ depth: 0, file: path.join(root, kind + '.html') }, { depth: 1, file: path.join(root, kind, 'index.html') }] : [{ depth: 1, file: path.join(root, lang, kind + '.html') }, { depth: 2, file: path.join(root, lang, kind, 'index.html') }];
+    for (const spot of spots) {
+      const pre = '../'.repeat(spot.depth);
+      const home = pre + (lang === 'en' ? '' : lang + '/');
+      const nav = Object.keys(LEGAL).map(l => `<a href="${legalHref(lang, spot.depth, l, kind)}"${l === lang ? ' aria-current="page"' : ''} hreflang="${l}">${names[l]}</a>`).join(' ');
+      const alt = Object.keys(LEGAL).map(l => `<link rel="alternate" hreflang="${l}" href="${SITE}/${l === 'en' ? '' : l + '/'}${kind}.html">`).join('');
+      const other = kind === 'privacy' ? 'terms' : 'privacy';
+      const title = kind === 'privacy' ? L.privacyTitle : L.termsTitle;
+      const desc = kind === 'privacy' ? L.privacyDesc : L.termsDesc;
+      const html = `<!doctype html>
+<html lang="${lang}"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>${esc(title)}</title><meta name="description" content="${esc(desc)}"><meta name="theme-color" content="#0B6E4F">
+<link rel="canonical" href="${SITE}/${lang === 'en' ? '' : lang + '/'}${kind}.html">${alt}
+<link rel="icon" href="${pre}icon.svg" type="image/svg+xml"><link rel="stylesheet" href="${pre}landing.css"></head>
+<body><header class="bar"><a class="brand" href="${home || './'}"><img src="${pre}icon.svg" alt="" width="30" height="30">Marginlog</a><nav aria-label="${esc(S[lang].nav)}">${nav}</nav><a class="hcta" href="${pre}app/">${esc(S[lang].cta)}</a></header>
+<main class="legal"><p class="eyebrow"><a href="${home || './'}">${esc(L.home)}</a></p><h1>${esc(title.replace(/ – Marginlog$/, ''))}</h1>
+${blocks(L[kind])}
+<p class="foot-legal"><a href="${legalHref(lang, spot.depth, lang, other)}">${esc(kind === 'privacy' ? L.termsLink : L.privacyLink)}</a></p>
+</main>
+<footer class="site-foot"><div class="foot-brand"><a class="brand" href="${home || './'}"><img src="${pre}icon.svg" alt="" width="26" height="26">Marginlog</a><p class="foot-legal"><a href="${legalHref(lang, spot.depth, lang, 'privacy')}">${esc(L.privacyLink)}</a> · <a href="${legalHref(lang, spot.depth, lang, 'terms')}">${esc(L.termsLink)}</a></p></div><p class="foot-disc">${esc(S[lang].disc)}</p><p class="foot-copy">${esc(S[lang].fcopy)}</p></footer></body></html>
+`;
+      fs.mkdirSync(path.dirname(spot.file), { recursive: true }); fs.writeFileSync(spot.file, html);
+    }
+  }
+}
+const legalLocs = Object.keys(LEGAL).flatMap(l => ['privacy', 'terms'].map(k => `${SITE}/${l === 'en' ? '' : l + '/'}${k}.html`));
+fs.writeFileSync(path.join(root, 'sitemap.xml'), `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${Object.keys(S).map(l => `<url><loc>${SITE}/${l === 'en' ? '' : l + '/'}</loc></url>`).join('\n')}\n${legalLocs.map(u => `<url><loc>${u}</loc></url>`).join('\n')}\n<url><loc>${SITE}/app/</loc></url>\n</urlset>\n`);
 fs.writeFileSync(path.join(root, 'robots.txt'), `User-agent: *\nAllow: /\nSitemap: ${SITE}/sitemap.xml\n`);
 console.log('site built');

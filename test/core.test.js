@@ -97,9 +97,20 @@ test('i18n: every key the UI asks for exists', () => {
 test('site build: five landing pages with hreflang and an app link', () => {
   const cp = require('child_process'); const out = fs.mkdtempSync(path.join(require('os').tmpdir(), 'ml-'));
   cp.execFileSync(process.execPath, [path.join(__dirname, '../scripts/build.js')], { env: Object.assign({}, process.env, { OUT: out }), stdio: 'pipe' });
-  for (const f of ['index.html', 'ko/index.html', 'ja/index.html', 'zh/index.html', 'es/index.html', 'app/index.html', 'app/sw.js', 'app/core.js', '_headers', 'icon-512.png']) assert.ok(fs.existsSync(path.join(out, f)), f);
-  const ko = fs.readFileSync(path.join(out, 'ko/index.html'), 'utf8'); assert.ok(ko.includes('lang="ko"') && ko.includes('hreflang="es"') && ko.includes('href="../app/"'));
+  for (const f of ['index.html', 'ko/index.html', 'ja/index.html', 'zh/index.html', 'es/index.html', 'app/index.html', 'app/sw.js', 'app/core.js', '_headers', 'icon-512.png', 'privacy.html', 'terms.html', 'privacy/index.html', 'terms/index.html', 'ko/privacy.html', 'ja/terms.html', 'zh/privacy.html', 'es/terms.html']) assert.ok(fs.existsSync(path.join(out, f)), f);
+  const ko = fs.readFileSync(path.join(out, 'ko/index.html'), 'utf8'); assert.ok(ko.includes('lang="ko"') && ko.includes('hreflang="es"') && ko.includes('href="../app/"') && ko.includes('privacy.html'));
+  const priv = fs.readFileSync(path.join(out, 'privacy.html'), 'utf8');
+  assert.ok(priv.includes('data-status="not-yet-available"') && priv.includes('Lemon Squeezy') && priv.includes('api.anthropic.com'));
+  assert.ok(!/\$19|1503604|2341490|5 activations|quickbillapp/.test(priv + fs.readFileSync(path.join(out, 'terms.html'), 'utf8') + fs.readFileSync(path.join(out, 'index.html'), 'utf8')));
+  assert.ok(!/tamper-evident|Evidence strength|no tracking|No tracking/i.test(fs.readFileSync(path.join(out, 'index.html'), 'utf8')));
   assert.equal(fs.existsSync(path.join(out, 'test')), false);
+});
+test('service worker caches same-origin successes and skips /api', () => {
+  const sw = fs.readFileSync(path.join(__dirname, '../app/sw.js'), 'utf8');
+  assert.ok(sw.includes("url.origin!==self.location.origin"));
+  assert.ok(sw.includes("url.pathname.indexOf('/api/')===0"));
+  assert.ok(sw.includes("e.request.method!=='GET'"));
+  assert.ok(sw.includes("r.type==='basic'"));
 });
 test('voided entries stay in the report and CSV, marked, and are counted separately', async () => {
   const c = await mk([{ at: '2026-10-01T23:00', text: 'first incident text here' }, { at: '2026-10-02T23:00', text: 'second incident text here' }]);

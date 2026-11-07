@@ -145,3 +145,5 @@ header.top { position: sticky; top: 0; z-index: 5; background: var(--bg); margin
 .site-foot .brand { color: var(--ink); text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-weight: 700; }
 .foot-brand { display: grid; gap: 6px; }
 .foot-desc, .foot-disc, .foot-copy { margin: 0; }
+.foot-legal { display: flex; flex-wrap: wrap; gap: 8px 14px; margin: 8px 0 0; }
+.foot-legal a { color: var(--acc); }
